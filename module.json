@@ -1,0 +1,70 @@
+{
+  "id": "token-action-hud-fu",
+  "title": "Token Action HUD for the FU System",
+  "description": "Adds support for Token Action HUD for the Unofficial Fabula Ultima System",
+  "authors": [
+    {
+      "name": "spyrella",
+      "url": "https://github.com/spyrella"
+    }
+  ],
+  "url": "This is auto replaced",
+  "flags": {},
+  "version": "This is auto replaced",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11.313"
+  },
+  "esmodules": [
+    "./scripts/init.js"
+  ],
+  "scripts": [
+  ],
+  "styles": [
+    "./styles/tah-fu.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
+  "packs": [],
+  "relationships": {
+    "systems": [
+      {
+        "id": "fabulaultima",
+        "type": "system",
+        "compatibility": [
+          {
+            "minimum": "2.0.0",
+            "verified": "2.0.0"
+          }
+        ]
+      }
+    ],
+    "requires": [
+      {
+        "id": "token-action-hud-core",
+        "type": "module",
+        "compatibility": [
+          {
+            "minimum": "1.5.0",
+            "maximum": "1.5",
+            "verified": "1.5.0"
+          }
+        ]
+      }
+    ],
+    "optional": [],
+    "flags": {
+      "optional": []
+    }
+  },
+  "socket": false,
+  "manifest": "#{MANIFEST}#",
+  "download": "#{DOWNLOAD}#",
+  "readme": "https://github.com/League-of-Fabulous-Developers/fvtt-token-action-hud-fu#readme",
+  "library": false
+}
