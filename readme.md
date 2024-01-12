@@ -2,7 +2,7 @@
 
 **Note:** This module is not working yet.
 
-# Token Action HUD for Unofficial Fabula Ultima
+# Token Action HUD for Unofficial Fabula Ultima (Project FU)
 
 Token Action HUD is a repositionable HUD of actions for a selected token.
 
@@ -25,7 +25,7 @@ Token Action HUD is a repositionable HUD of actions for a selected token.
 
 ## Required Modules
 
-**IMPORTANT** - Token Action HUD for Fabbula Ultima requires the [Token Action HUD Core](https://foundryvtt.com/packages/token-action-hud-core) module to be installed.
+**IMPORTANT** - Token Action HUD for Fabula Ultima (Project FU) requires the [Token Action HUD Core](https://foundryvtt.com/packages/token-action-hud-core) module to be installed.
 
 ## Recommended Modules
 Token Action HUD uses the [Color Picker](https://foundryvtt.com/packages/color-picker) library module for its color picker settings.
