@@ -21,7 +21,7 @@
   "scripts": [
   ],
   "styles": [
-    "./styles/tah-fu.css"
+    "./styles/tah-fu-style.css"
   ],
   "languages": [
     {

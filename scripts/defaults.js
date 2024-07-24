@@ -22,7 +22,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     { ...groups.mainSlot, nestId: 'attack_mainSlot' },
                     { ...groups.offSlot, nestId: 'attack_offSlot' },
                     { ...groups.armorSlot, nestId: 'attack_armorSlot' },
-                    { ...groups.accessorySlot, nestId: 'attack_accessorySlot' },
+                    { ...groups.accessorySlot, nestId: 'attack_accessorySlot' }
                 ]
             },
             {
@@ -34,8 +34,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     { ...groups.shields, nestId: 'equipment_shields' },
                     { ...groups.armor, nestId: 'equipment_armor' },
                     { ...groups.accessories, nestId: 'equipment_accessories' },
-                    //{ ...groups.consumables, nestId: 'equipment_consumables' },
-                    //{ ...groups.treasures, nestId: 'equipment_treasures' }
+                    { ...groups.consumables, nestId: 'equipment_consumables' },
+                    { ...groups.treasures, nestId: 'equipment_treasures' }
                 ]
             },
             {
@@ -43,7 +43,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 id: 'guard',
                 name: coreModule.api.Utils.i18n('Guard'),
                 groups: [
-                    { ...groups.weapons, nestId: 'equipment_weapons' },
+                    { ...groups.weapons, nestId: 'equipment_weapons' }
                 ]
             },
             {
@@ -51,7 +51,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 id: 'spell',
                 name: coreModule.api.Utils.i18n('Spell'),
                 groups: [
-                    { ...groups.spells, nestId: 'spell_name' },
+                    { ...groups.spells, nestId: 'spell_name' }
                 ]
             },
             {
@@ -59,10 +59,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 id: 'travel',
                 name: coreModule.api.Utils.i18n('Travel'),
                 groups: [
-                    { ...groups.travels, nestId: 'travel_name' },
+                    { ...groups.travels, nestId: 'travel_name' }
                 ]
             },
-            
             {
                 nestId: 'utility',
                 id: 'utility',

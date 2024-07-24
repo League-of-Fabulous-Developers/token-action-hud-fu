@@ -40,9 +40,8 @@ export const GROUP = {
     shields: { id: 'shields', name: 'tokenActionHud.fu.equipment.shields', type: 'system' },
     armor: { id: 'armor', name: 'tokenActionHud.fu.equipment.armor', type: 'system' },
     accessories: { id: 'accessories', name: 'tokenActionHud.fu.equipment.accessories', type: 'system' },
-    //consumables: { id: 'consumables', name: 'tokenActionHud.fu.equipment.consumables', type: 'system' },
-    //treasures: { id: 'treasures', name: 'tokenActionHud.fu.equipment.treasures', type: 'system' },
-
+    consumables: { id: 'consumables', name: 'tokenActionHud.fu.equipment.consumables', type: 'system' },
+    treasures: { id: 'treasures', name: 'tokenActionHud.fu.equipment.treasures', type: 'system' },
 
     // Action Labels
     spells: { id: 'spells', name: 'tokenActionHud.fu.spells.label', type: 'system' },
@@ -64,7 +63,7 @@ export const ITEM_TYPE = {
     consumable: { groupId: 'consumables' },
     treasure: { groupId: 'treasures' },
     spell: { groupId: 'spells' },
-    miscAbility: { groupId: 'abilities' },
+    miscAbility: { groupId: 'abilities' }
 }
 
 /**
@@ -74,5 +73,5 @@ export const SLOT_TYPE = {
     mainSlot: { groupId: 'mainSlot' },
     offSlot: { groupId: 'offSlot' },
     armorSlot: { groupId: 'armorSlot' },
-    accessorySlot: { groupId: 'accessorySlot' },
+    accessorySlot: { groupId: 'accessorySlot' }
 }

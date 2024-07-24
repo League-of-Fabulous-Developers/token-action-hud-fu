@@ -30,7 +30,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @returns {object} The available roll handlers
          */
         getAvailableRollHandlers () {
-            const coreTitle = 'Core Template'
+            const coreTitle = 'Fabula Ultima'
             const choices = { core: coreTitle }
             return choices
         }
@@ -82,9 +82,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             return {
                 template: {
                     class: 'tah-style-fu-style', // The class to add to first DIV element
-                    file: 'tah-fu', // The file without the css extension
+                    file: 'tah-fu-style', // The file without the css extension
                     moduleId: MODULE.ID, // The module ID
-                    name: 'Fabula Ultima Style' // The name to display in the Token Action HUD Core 'Style' module setting
+                    name: 'FU Style' // The name to display in the Token Action HUD Core 'Style' module setting
                 }
             }
         }

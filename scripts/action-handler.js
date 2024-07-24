@@ -44,18 +44,16 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         #buildCharacterActions () {
-            this.#buildAttack()
             this.#buildEquipment()
-            this.#buildSpell()
             this.#buildTravel()
         }
-        
+
         /**
          * Build npc actions
          * @private
          */
         #buildNPCActions () {
-        //    this.#buildEquipment()
+        // this.#buildEquipment()
         }
 
         /**
@@ -70,11 +68,10 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * Handle travel action click event
          * @private
          */
-        handleTravelActionClick() {
+        handleTravelActionClick () {
             // Implement the logic to handle the click event for the travel action
-            showTravelCheckDialog();
+            showTravelCheckDialog()
         }
-
 
         /**
          * Build inventory
@@ -83,70 +80,21 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         async #buildEquipment () {
             if (this.items.size === 0) return
 
-            const actionTypeId = 'equipment'
-            const equipmentMap = new Map()
+            const actionTypeId = 'item'
+            const inventoryMap = new Map()
 
             for (const [itemId, itemData] of this.items) {
                 const type = itemData.type
-                const equipped = itemData.isEquipped
+                const equipped = itemData.equipped
 
                 if (equipped || this.displayUnequipped) {
-                    const typeMap = equipmentMap.get(type) ?? new Map()
+                    const typeMap = inventoryMap.get(type) ?? new Map()
                     typeMap.set(itemId, itemData)
-                    equipmentMap.set(type, typeMap)
+                    inventoryMap.set(type, typeMap)
                 }
             }
 
-            for (const [type, typeMap] of equipmentMap) {
-                const groupId = ITEM_TYPE[type]?.groupId
-
-                if (!groupId) continue
-
-                const groupData = { id: groupId, type: 'system' }
-
-                // Get actions
-                const actions = [...typeMap].map(([itemId, itemData]) => {
-                    const id = itemId
-                    const name = itemData.name
-                    const actionTypeName = coreModule.api.Utils.i18n(ACTION_TYPE[actionTypeId])
-                    const listName = `${actionTypeName ? `${actionTypeName}: ` : ''}${name}`
-                    const encodedValue = [actionTypeId, id].join(this.delimiter)
-
-                    return {
-                        id,
-                        name,
-                        listName,
-                        encodedValue
-                    }
-                })
-
-                // TAH Core method to add actions to the action list
-                this.addActions(actions, groupData)
-            }
-        }
-
-        /**
-         * Build attack action
-         * @private
-         */
-        async #buildSpell () {
-            if (this.items.size === 0) return
-
-            const actionTypeId = 'spell'
-            const equipmentMap = new Map()
-
-            for (const [itemId, itemData] of this.items) {
-                const type = itemData.type
-                const equipped = itemData.isEquipped
-
-                if (equipped || this.displayUnequipped) {
-                    const typeMap = equipmentMap.get(type) ?? new Map()
-                    typeMap.set(itemId, itemData)
-                    equipmentMap.set(type, typeMap)
-                }
-            }
-
-            for (const [type, typeMap] of equipmentMap) {
+            for (const [type, typeMap] of inventoryMap) {
                 const groupId = ITEM_TYPE[type]?.groupId
 
                 if (!groupId) continue
@@ -179,79 +127,30 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         async #buildTravel () {
-            const actionTypeId = 'travel';  // Replace 'travel' with the correct action type ID
-            const groupId = ITEM_TYPE['travel']?.groupId;  // Replace 'travel' with the correct type for the travel action
+            const actionTypeId = 'travel' // Replace 'travel' with the correct action type ID
+            // eslint-disable-next-line dot-notation
+            const groupId = ITEM_TYPE['travel']?.groupId // Replace 'travel' with the correct type for the travel action
 
-            if (!groupId) return;
+            if (!groupId) return
 
-            const groupData = { id: groupId, type: 'system' };
+            const groupData = { id: groupId, type: 'system' }
 
             // Get actions
             const actions = [{
                 id: 'travel',
                 name: 'Travel',
-                listName: 'Travel',  // You can customize the display name
-                encodedValue: [actionTypeId, 'travel'].join(this.delimiter)  // You may need to adjust this based on your needs
-            }];
+                listName: 'Travel', // You can customize the display name
+                encodedValue: [actionTypeId, 'travel'].join(this.delimiter) // You may need to adjust this based on your needs
+            }]
 
             // TAH Core method to add actions to the action list
-            this.addActions(actions, groupData);
+            this.addActions(actions, groupData)
 
             // Add click event listener to the travel action
             $(`#${groupData.id}`).click((ev) => {
-                ev.preventDefault();
-                this.handleTravelActionClick();
-            });
+                ev.preventDefault()
+                this.handleTravelActionClick()
+            })
         }
-
-        /**
-         * Build spell action
-         * @private
-         */
-        async #buildAttack () {
-            if (this.items.size === 0) return
-
-            const actionTypeId = 'attack'
-            const equipmentMap = new Map()
-
-            for (const [itemId, itemData] of this.items) {
-                const type = itemData.type
-                const equipped = itemData.isEquipped
-
-                if (equipped || this.displayUnequipped) {
-                    const typeMap = equipmentMap.get(type) ?? new Map()
-                    typeMap.set(itemId, itemData)
-                    equipmentMap.set(type, typeMap)
-                }
-            }
-
-            for (const [type, typeMap] of equipmentMap) {
-                const groupId = SLOT_TYPE[type]?.groupId
-
-                if (!groupId) continue
-
-                const groupData = { id: groupId, type: 'system' }
-
-                // Get actions
-                const actions = [...typeMap].map(([itemId, itemData]) => {
-                    const id = itemId
-                    const name = itemData.name
-                    const actionTypeName = coreModule.api.Utils.i18n(ACTION_TYPE[actionTypeId])
-                    const listName = `${actionTypeName ? `${actionTypeName}: ` : ''}${name}`
-                    const encodedValue = [actionTypeId, id].join(this.delimiter)
-
-                    return {
-                        id,
-                        name,
-                        listName,
-                        encodedValue
-                    }
-                })
-
-                // TAH Core method to add actions to the action list
-                this.addActions(actions, groupData)
-            }
-        }
-
     }
 })

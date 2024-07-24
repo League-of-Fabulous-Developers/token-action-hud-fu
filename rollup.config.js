@@ -1,6 +1,6 @@
 import { terser } from 'rollup-plugin-terser'
 import multi from '@rollup/plugin-multi-entry'
-import livereload from 'rollup-plugin-livereload';
+import livereload from 'rollup-plugin-livereload'
 
 export default [
     {
@@ -19,9 +19,9 @@ export default [
         plugins: [
             terser({ keep_classnames: true, keep_fnames: true }),
             multi(),
-            livereload ({
+            livereload({
                 port: 9999
-            }),
+            })
         ]
     }
 ]
