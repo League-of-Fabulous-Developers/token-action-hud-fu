@@ -15,6 +15,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         async handleActionClick (event, encodedValue) {
             const [actionTypeId, actionId] = encodedValue.split('|')
 
+            const isShift = this.shift
+
             const renderable = ['item']
 
             if (renderable.includes(actionTypeId) && this.isRenderItem()) {
@@ -25,7 +27,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
             // If single actor is selected
             if (this.actor) {
-                await this.#handleAction(event, this.actor, this.token, actionTypeId, actionId)
+                await this.#handleAction(event, this.actor, this.token, actionTypeId, actionId, isShift)
                 return
             }
 
@@ -35,7 +37,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             // If multiple actors are selected
             for (const token of controlledTokens) {
                 const actor = token.actor
-                await this.#handleAction(event, actor, token, actionTypeId, actionId)
+                await this.#handleAction(event, actor, token, actionTypeId, actionId, isShift)
             }
         }
 
@@ -66,13 +68,64 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {string} actionTypeId The action type id
          * @param {string} actionId     The actionId
          */
-        async #handleAction (event, actor, token, actionTypeId, actionId) {
+        async #handleAction (event, actor, token, actionTypeId, actionId, isShift) {
             switch (actionTypeId) {
             case 'item':
                 this.#handleItemAction(event, actor, actionId)
                 break
+            case 'action':
+                this.#handleCombatAction(event, actor, actionId, isShift)
+                break
             case 'utility':
                 this.#handleUtilityAction(token, actionId)
+                break
+            }
+        }
+
+        /**
+         * Handles combat actions
+         *
+         * @private
+         * @param {Event} event     The event
+         * @param {Object} actor    The actor
+         * @param {string} actionId The action type id
+         * @param {boolean} isShift Whether Shift key was pressed
+         *
+         * @returns {Promise<void>}
+         */
+        async #handleCombatAction (event, actor, actionId, isShift) {
+            const combatActionHandler = new game.projectfu.ActionHandler(actor)
+
+            switch (actionId) {
+            case 'equipmentAction':
+                await combatActionHandler.handleAction('equipmentAction', isShift)
+                break
+            case 'guardAction':
+                await combatActionHandler.handleAction('guardAction', isShift)
+                break
+            case 'hinderAction':
+                await combatActionHandler.handleAction('hinderAction', isShift)
+                break
+            case 'inventoryAction':
+                await combatActionHandler.handleAction('inventoryAction', isShift)
+                break
+            case 'objectiveAction':
+                await combatActionHandler.handleAction('objectiveAction', isShift)
+                break
+            case 'spellAction':
+                await combatActionHandler.handleAction('spellAction', isShift)
+                break
+            case 'studyAction':
+                await combatActionHandler.handleAction('studyAction', isShift)
+                break
+            case 'skillAction':
+                await combatActionHandler.handleAction('skillAction', isShift)
+                break
+            case 'travelCheck':
+                game.lookfar.showTravelCheckDialog()
+                break
+            default:
+                console.warn(`Unknown action ID: ${actionId}`)
                 break
             }
         }

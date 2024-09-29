@@ -7,59 +7,51 @@ export let DEFAULTS = null
 
 Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
     const groups = GROUP
-    Object.values(groups).forEach(group => {
+    Object.values(groups).forEach((group) => {
         group.name = coreModule.api.Utils.i18n(group.name)
-        group.listName = `Group: ${coreModule.api.Utils.i18n(group.listName ?? group.name)}`
+        group.listName = `${game.i18n.localize(
+            'tokenActionHud.fu.group'
+        )}: ${coreModule.api.Utils.i18n(group.listName ?? group.name)}`
     })
     const groupsArray = Object.values(groups)
     DEFAULTS = {
         layout: [
             {
-                nestId: 'attack',
-                id: 'attack',
-                name: coreModule.api.Utils.i18n('Attack'),
+                nestId: 'action',
+                id: 'action',
+                name: coreModule.api.Utils.i18n('Action'),
                 groups: [
-                    { ...groups.mainSlot, nestId: 'attack_mainSlot' },
-                    { ...groups.offSlot, nestId: 'attack_offSlot' },
-                    { ...groups.armorSlot, nestId: 'attack_armorSlot' },
-                    { ...groups.accessorySlot, nestId: 'attack_accessorySlot' }
+                    { ...groups.check, nestId: 'action_check' },
+                    { ...groups.action, nestId: 'action_action' }
                 ]
             },
             {
-                nestId: 'equipment',
-                id: 'equipment',
-                name: coreModule.api.Utils.i18n('Equipment'),
+                nestId: 'feature',
+                id: 'feature',
+                name: coreModule.api.Utils.i18n('Feature'),
                 groups: [
-                    { ...groups.weapons, nestId: 'equipment_weapons' },
-                    { ...groups.shields, nestId: 'equipment_shields' },
-                    { ...groups.armor, nestId: 'equipment_armor' },
-                    { ...groups.accessories, nestId: 'equipment_accessories' },
-                    { ...groups.consumables, nestId: 'equipment_consumables' },
-                    { ...groups.treasures, nestId: 'equipment_treasures' }
+                    { ...groups.basic, nestId: 'feature_basic' },
+                    { ...groups.spell, nestId: 'feature_spell' },
+                    { ...groups.miscAbility, nestId: 'feature_miscAbility' },
+                    { ...groups.rule, nestId: 'feature_rule' },
+                    { ...groups.ritual, nestId: 'feature_ritual' },
+                    { ...groups.project, nestId: 'feature_project' },
+                    { ...groups.classFeature, nestId: 'feature_classFeature' },
+                    { ...groups.optionalFeature, nestId: 'feature_optionalFeature' }
                 ]
             },
             {
-                nestId: 'guard',
-                id: 'guard',
-                name: coreModule.api.Utils.i18n('Guard'),
+                nestId: 'item',
+                id: 'item',
+                name: coreModule.api.Utils.i18n('Items'),
                 groups: [
-                    { ...groups.weapons, nestId: 'equipment_weapons' }
-                ]
-            },
-            {
-                nestId: 'spell',
-                id: 'spell',
-                name: coreModule.api.Utils.i18n('Spell'),
-                groups: [
-                    { ...groups.spells, nestId: 'spell_name' }
-                ]
-            },
-            {
-                nestId: 'travel',
-                id: 'travel',
-                name: coreModule.api.Utils.i18n('Travel'),
-                groups: [
-                    { ...groups.travels, nestId: 'travel_name' }
+                    { ...groups.equipped, nestId: 'item_equipped' },
+                    { ...groups.weapon, nestId: 'item_weapon' },
+                    { ...groups.shield, nestId: 'item_shield' },
+                    { ...groups.armor, nestId: 'item_armor' },
+                    { ...groups.accessory, nestId: 'item_accessory' },
+                    { ...groups.consumable, nestId: 'item_consumable' },
+                    { ...groups.treasure, nestId: 'item_treasure' }
                 ]
             },
             {

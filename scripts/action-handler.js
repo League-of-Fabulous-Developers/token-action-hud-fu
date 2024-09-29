@@ -1,6 +1,5 @@
 // System Module Imports
 import { ACTION_TYPE, ITEM_TYPE } from './constants.js'
-import { Utils } from './utils.js'
 
 export let ActionHandler = null
 
@@ -14,14 +13,11 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * Called by Token Action HUD Core
          * @override
          * @param {array} groupIds
-         */a
+         */
         async buildSystemActions (groupIds) {
             // Set actor and token variables
             this.actors = (!this.actor) ? this._getActors() : [this.actor]
             this.actorType = this.actor?.type
-
-            // Settings
-            this.displayUnequipped = Utils.getSetting('displayUnequipped')
 
             // Set items variable
             if (this.actor) {
@@ -44,7 +40,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         #buildCharacterActions () {
-            this.#buildEquipment()
+            this.#buildCombatActions()
+            this.#buildItems()
             this.#buildTravel()
         }
 
@@ -53,7 +50,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         #buildNPCActions () {
-        // this.#buildEquipment()
+            this.#buildCombatActions()
+            this.#buildItems()
+            this.#buildTravel()
         }
 
         /**
@@ -65,48 +64,108 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         }
 
         /**
-         * Handle travel action click event
+         * Build Combat Action actions for the HUD
+         *
+         * This method will create buttons for each combat action type.
          * @private
          */
-        handleTravelActionClick () {
-            // Implement the logic to handle the click event for the travel action
-            showTravelCheckDialog()
+        async #buildCombatActions () {
+            const combatActions = [
+                { id: 'guardAction', name: 'Guard' },
+                { id: 'equipmentAction', name: 'Equipment' },
+                { id: 'hinderAction', name: 'Hinder' },
+                { id: 'inventoryAction', name: 'Inventory' },
+                { id: 'objectiveAction', name: 'Objective' },
+                { id: 'spellAction', name: 'Spell' },
+                { id: 'studyAction', name: 'Study' },
+                { id: 'skillAction', name: 'Skill' }
+            ]
+
+            const actionTypeId = 'action'
+            const combatGroupId = 'action' // Group ID for combat actions
+
+            const actions = combatActions.map(action => {
+                return {
+                    id: action.id,
+                    name: coreModule.api.Utils.i18n(action.name),
+                    listName: action.name,
+                    encodedValue: [actionTypeId, action.id].join(this.delimiter) // Ensure delimiter is defined
+                }
+            })
+
+            const combatGroupData = { id: combatGroupId, type: 'system' }
+            this.addActions(actions, combatGroupData)
         }
 
         /**
-         * Build inventory
+         * Build Travel Action actions for the HUD
+         *
+         * This method handle the construction of action buttons for all combat actions.
+         *
          * @private
          */
-        async #buildEquipment () {
-            if (this.items.size === 0) return
+        async #buildTravel () {
+            const actionTypeId = 'action' // Action type identifier
+            const travelGroupId = 'check' // Group ID for the travel actions
 
-            const actionTypeId = 'item'
-            const inventoryMap = new Map()
-
-            for (const [itemId, itemData] of this.items) {
-                const type = itemData.type
-                const equipped = itemData.equipped
-
-                if (equipped || this.displayUnequipped) {
-                    const typeMap = inventoryMap.get(type) ?? new Map()
-                    typeMap.set(itemId, itemData)
-                    inventoryMap.set(type, typeMap)
-                }
+            // Define the travel action button
+            const travelAction = {
+                id: 'travelAction',
+                name: coreModule.api.Utils.i18n('Travel Check'), // Label for the action button
+                listName: 'Travel Check', // Tooltip or extended name
+                encodedValue: [actionTypeId, 'travelCheck'].join(this.delimiter) // Encoded value for the action
             }
 
+            // Add the travel action to the "Travel" group
+            const travelGroupData = { id: travelGroupId, type: 'system' }
+            this.addActions([travelAction], travelGroupData)
+        }
+
+        /**
+         * Build Inventory Actions for the HUD, including equipped items.
+         * @private
+         *
+         * This method handle the construction of action buttons for items in the actor's
+         * inventory, organized by equipment slots.
+         */
+        async #buildItems () {
+            // Exit if the actor has no items
+            if (this.items.size === 0) return
+
+            const actionTypeId = 'item' // Action type identifier
+            const inventoryMap = new Map() // Map for categorized inventory items
+
+            // Equipment slots
+            const slots = ['mainHand', 'offHand', 'phantom', 'armor', 'accessory', 'arcanum']
+            const equippedItemIds = new Set() // Store equipped item IDs
+
+            // Gather equipped items from slots
+            for (const slot of slots) {
+                const equippedItemId = this.actor.system.equipped[slot]
+                if (equippedItemId) equippedItemIds.add(equippedItemId)
+            }
+
+            // Categorize items in the inventory
+            for (const [itemId, itemData] of this.items) {
+                const typeMap = inventoryMap.get(itemData.type) ?? new Map()
+                typeMap.set(itemId, itemData)
+                inventoryMap.set(itemData.type, typeMap)
+            }
+
+            // Create action buttons for each item type
             for (const [type, typeMap] of inventoryMap) {
                 const groupId = ITEM_TYPE[type]?.groupId
+                if (!groupId) continue // Skip if no group ID
 
-                if (!groupId) continue
+                const groupData = { id: groupId, type: 'system' } // Group data for the item type
 
-                const groupData = { id: groupId, type: 'system' }
-
-                // Get actions
+                // Generate actions for items in this type
                 const actions = [...typeMap].map(([itemId, itemData]) => {
                     const id = itemId
                     const name = itemData.name
+                    const description = itemData.system.description || ''
                     const actionTypeName = coreModule.api.Utils.i18n(ACTION_TYPE[actionTypeId])
-                    const listName = `${actionTypeName ? `${actionTypeName}: ` : ''}${name}`
+                    const listName = `${actionTypeName ? `${actionTypeName}: ` : ''}${name}<br>${description}`
                     const encodedValue = [actionTypeId, id].join(this.delimiter)
 
                     return {
@@ -117,40 +176,29 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     }
                 })
 
-                // TAH Core method to add actions to the action list
-                this.addActions(actions, groupData)
+                this.addActions(actions, groupData) // Add actions to the group
             }
-        }
 
-        /**
-         * Build travel roll action
-         * @private
-         */
-        async #buildTravel () {
-            const actionTypeId = 'travel' // Replace 'travel' with the correct action type ID
-            // eslint-disable-next-line dot-notation
-            const groupId = ITEM_TYPE['travel']?.groupId // Replace 'travel' with the correct type for the travel action
+            // Handle equipped items separately for the "Equipped" group
+            const equippedActions = [...this.items].filter(([itemId]) => equippedItemIds.has(itemId)).map(([itemId, itemData]) => {
+                const id = itemId
+                const name = itemData.name
+                const description = itemData.system.description || ''
+                const actionTypeName = coreModule.api.Utils.i18n(ACTION_TYPE[actionTypeId])
+                const listName = `${actionTypeName ? `${actionTypeName}: ` : ''}${name}<br>${description}`
+                const encodedValue = [actionTypeId, id].join(this.delimiter)
 
-            if (!groupId) return
-
-            const groupData = { id: groupId, type: 'system' }
-
-            // Get actions
-            const actions = [{
-                id: 'travel',
-                name: 'Travel',
-                listName: 'Travel', // You can customize the display name
-                encodedValue: [actionTypeId, 'travel'].join(this.delimiter) // You may need to adjust this based on your needs
-            }]
-
-            // TAH Core method to add actions to the action list
-            this.addActions(actions, groupData)
-
-            // Add click event listener to the travel action
-            $(`#${groupData.id}`).click((ev) => {
-                ev.preventDefault()
-                this.handleTravelActionClick()
+                return {
+                    id,
+                    name,
+                    listName,
+                    encodedValue
+                }
             })
+
+            // Add equipped actions to the "Equipped" group
+            const equippedGroupData = { id: 'equipped', type: 'system' }
+            this.addActions(equippedActions, equippedGroupData)
         }
     }
 })

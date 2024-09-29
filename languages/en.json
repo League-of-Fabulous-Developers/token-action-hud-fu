@@ -1,45 +1,13 @@
 {
   "tokenActionHud": {
     "fu": {
-      "actions": {},
-      "attack": {
-        "label": "Attack",
-        "mainSlot": "Main Slot",
-        "offSlot": "Off Slot",
-        "armorSlot": "Armor Slot",
-        "accessorySlot": "Accessory Slot"
+      "group": "Group",
+      "equipped": {
+        "label": "[Equipped]"
       },
-      "equipment": {
-        "label": "Equipment",
-        "weapons": "Weapons",
-        "shields": "Shields",
-        "armor": "Armor",
-        "accessories": "Accessories",
-        "consumables": "Consumables",
-        "treasures": "Treasures"
-      },
-      "guard": {
-        "label": "Guard"
-      },
-      "spells": {
-        "label": "Spells",
-        "duration": "Duration",
-        "target": "Target",
-        "mpCost": "MP Cost"
-      },
-      "travel": {
-        "label": "Travel"
-      },
-      "abilities": {
-        "label": "Abilities",
-        "exploration": "Exploration Skills",
-        "rollable": "Rollable Skills",
-        "misc": "Other Skills"
-      },
-      "checks": {
-        "label": "Roll Check",
-        "saves": "Saving Throws",
-        "abilitychecks": "Ability Checks"  
+      "check": {
+        "label": "Checks",
+        "travelcheck": "Travel Check"
       },
       "settings": {
         "displayUnequipped": {

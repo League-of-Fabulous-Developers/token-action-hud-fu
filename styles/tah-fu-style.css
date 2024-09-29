@@ -1,32 +1,42 @@
 :root {
     --tah-background-color: #00000000;
-    --tah-border-radius: 3px;
+    --tah-border-radius: 10px;
     --tah-gap: 5px;
 
-    --tah-button-background-color: #000000b3;
-    --tah-button-border-color: none;
+    --tah-button-background-color: #148782b3;
+
+	--tah-button-gradient-initial: linear-gradient(180deg, rgba(17, 41, 41, .6) 0%, rgba(73, 164, 153, .6) 100%);
+	--tah-button-gradient-highlight: linear-gradient(0deg, rgba(220, 211, 116, 1) 0%, rgba(255, 247, 154, 1) 100%);
+	--tah-button-gradient-active: linear-gradient(0deg, rgba(226, 128, 121, .8) 0%, rgba(241, 163, 114, 0.8) 100%);
+	--tah-button--gradient-header-transparent: linear-gradient(90deg, rgba(81, 199, 173, 0.3) 0%, rgba(4, 74, 44, 0.3) 100%);
+	
+	--tah-button-gradient-bg-transparent: linear-gradient(0deg, rgba(4, 74, 44, 0.3) 0%, rgba(4, 74, 44, 0.3) 100%);
+	--tah-button-gradient-bg-translucent: linear-gradient(270deg, rgba(17, 41, 41, 0.5) 0%, rgba(73, 164, 153, 0.5) 100%);
+
+    --tah-button-border-color: var(--tah-text-hover-primary-color);
     --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606,
         0 0 5px #000000ff;
     --tah-button-disabled-text-color: var(--tah-text-secondary-color);
     --tah-button-text-color: var(--tah-text-primary-color);
     --tah-button-height: 32px;
     --tah-button-min-width: 32px;
-    --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-text-tertiary-color),
-        0 0 0 1px red, 0 0 10px var(--tah-text-tertiary-color);
-    --tah-button-hover-text-color: #fff;
+    --tah-button-hover-box-shadow: 0 0 5px #d8e08f;
+    --tah-button-hover-text-color: #047470;
     --tah-button-active-background-color: #3c0078bf;
     --tah-button-active-box-shadow: 0 0 0 1px #9b8dff, inset 0 0 10px #9b8dff;
     --tah-button-toggle-background-color: #000000b3;
     --tah-button-toggle-hover-background-color: #3c0078bf;
     --tah-button-toggle-hover-box-shadow: 0 0 0 1px #9b8dff, 0 0 10px #9b8dff;
     --tah-text-disabled-color: var(--tah-text-secondary-color);
-    --tah-text-primary-color: #dddddd;
-    --tah-text-secondary-color: #dddddd80;
+
+    --tah-text-primary-color: #ebf7af;
+    --tah-text-secondary-color: #148782;
     --tah-text-tertiary-color: #ff6400;
-    --tah-text-hover-primary-color: var(--tah-text-primary-color);
-    --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
+
+    --tah-text-hover-primary-color: #047470;
+    --tah-text-hover-secondary-color: #047470;
     --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
-    --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);
+    --tah-text-shadow: #77ebd7;
 }
 
 #token-action-hud {
@@ -134,10 +144,12 @@
 .tah-group-button,
 .tah-group-button:focus {
     align-items: center;
-    background-color: var(--tah-button-background-color);
-    border: var(--tah-button-border-color);
+    background: var(--tah-button-gradient-initial);
+    border: solid;
+    border-width: 0.01em;
+    border-color: var(--tah-button-border-color);
     border-radius: var(--tah-border-radius);
-    box-shadow: var(--tah-button-box-shadow);
+    box-shadow: none;
     color: var(--tah-button-text-color);
     display: flex;
     height: var(--tah-button-height);
@@ -146,7 +158,7 @@
     position: relative;
     text-align: center;
     text-decoration: none;
-    text-shadow: var(--tah-text-shadow);
+    text-shadow: none;
     transition: all 0.1s ease-in-out;
     white-space: nowrap;
     z-index: 1;
@@ -162,8 +174,10 @@
 .tah-action-button:active,
 .tah-action-button:not(.disabled):hover,
 .tah-group-button:not(.disabled):hover {
+    border-color: var(--tah-text-hover-secondary-color);
+    background: var(--tah-button-gradient-highlight);
     box-shadow: var(--tah-button-hover-box-shadow);
-    color: var(--tah-button-hover-text-color);
+    color: var(--tah-text-hover-primary-color);
 }
 
 .tah-action-button.toggle:not(.disabled):hover {

@@ -84,7 +84,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     class: 'tah-style-fu-style', // The class to add to first DIV element
                     file: 'tah-fu-style', // The file without the css extension
                     moduleId: MODULE.ID, // The module ID
-                    name: 'FU Style' // The name to display in the Token Action HUD Core 'Style' module setting
+                    name: 'PFU Style' // The name to display in the Token Action HUD Core 'Style' module setting
                 }
             }
         }
