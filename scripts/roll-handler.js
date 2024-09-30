@@ -121,6 +121,18 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             case 'skillAction':
                 await combatActionHandler.handleAction('skillAction', isShift)
                 break
+            case 'attributeCheck':
+                Hooks.call('promptAttributeCheckCalled', actor)
+                break
+            case 'openCheck':
+                Hooks.call('promptOpenCheckCalled', actor)
+                break
+            case 'groupCheck':
+                Hooks.call('promptGroupCheckCalled', actor)
+                break
+            case 'initiativeCheck':
+                Hooks.call('promptInitiativeCheckCalled', actor)
+                break
             case 'travelCheck':
                 game.lookfar.showTravelCheckDialog()
                 break

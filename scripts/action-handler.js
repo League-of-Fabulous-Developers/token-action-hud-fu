@@ -40,6 +40,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         #buildCharacterActions () {
+            this.#buildCheckActions()
             this.#buildCombatActions()
             this.#buildItems()
             this.#buildTravel()
@@ -50,6 +51,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         #buildNPCActions () {
+            this.#buildCheckActions()
             this.#buildCombatActions()
             this.#buildItems()
             this.#buildTravel()
@@ -61,6 +63,36 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @returns {object}
          */
         #buildMultipleTokenActions () {
+        }
+
+        /**
+         * Build Check Action actions for the HUD
+         *
+         * This method will create buttons for each checks action type.
+         * @private
+         */
+        async #buildCheckActions () {
+            const checkActions = [
+                { id: 'attributeCheck', name: 'Attribute Check' },
+                { id: 'openCheck', name: 'Open Check' },
+                { id: 'groupCheck', name: 'Group Check' },
+                { id: 'initiativeCheck', name: 'Initiative Check' }
+            ]
+
+            const actionTypeId = 'action'
+            const checkGroupId = 'check'
+
+            const actions = checkActions.map(action => {
+                return {
+                    id: action.id,
+                    name: coreModule.api.Utils.i18n(action.name),
+                    listName: action.name,
+                    encodedValue: [actionTypeId, action.id].join(this.delimiter) // Ensure delimiter is defined
+                }
+            })
+
+            const checkGroupData = { id: checkGroupId, type: 'system' }
+            this.addActions(actions, checkGroupData)
         }
 
         /**
