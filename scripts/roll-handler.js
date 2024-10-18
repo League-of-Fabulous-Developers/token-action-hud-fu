@@ -79,7 +79,55 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             case 'utility':
                 this.#handleUtilityAction(token, actionId)
                 break
+            case 'resource':
+                this.#handleResourceAction(event, actor, actionId)
+                break
+            case 'clock':
+                this.#handleClockAction(event, actor, actionId)
+                break
             }
+        }
+
+        /**
+         * Handle resource action (system.rp.current)
+         * @private
+         * @param {object} event    The event
+         * @param {object} actor    The actor
+         * @param {string} actionId The action id
+         */
+        async #handleResourceAction (event, actor, actionId) {
+            const [manage, itemId] = actionId.split('-')
+            const item = await actor.items.get(itemId)
+            const itemData = item.system
+            let current
+            if (manage === 'decrease') {
+                current = itemData.current - 1
+            }
+            if (manage === 'increase') {
+                current = itemData.current + 1
+            }
+            await item.update({ 'system.rp.current': current })
+        }
+
+        /**
+         * Handle clock resource action (system.progress.current)
+         * @private
+         * @param {object} event    The event
+         * @param {object} actor    The actor
+         * @param {string} actionId The action id
+         */
+        async #handleClockAction (event, actor, actionId) {
+            const [manage, itemId] = actionId.split('-')
+            const item = await actor.items.get(itemId)
+            const itemData = item.system
+            let current
+            if (manage === 'decrease') {
+                current = itemData.current - 1
+            }
+            if (manage === 'increase') {
+                current = itemData.current + 1
+            }
+            await item.update({ 'system.progress.current': current })
         }
 
         /**

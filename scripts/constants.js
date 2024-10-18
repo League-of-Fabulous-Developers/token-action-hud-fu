@@ -52,7 +52,9 @@ export const ACTION_TYPE = {
 
     check: 'tokenActionHud.fu.check.label',
     travel: 'tokenActionHud.fu.check.travelcheck',
-    utility: 'tokenActionHud.utility'
+    utility: 'tokenActionHud.utility',
+    resource: 'FU.Resource',
+    clock: 'FU.Clock'
 }
 
 /**

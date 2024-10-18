@@ -40,10 +40,10 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         #buildCharacterActions () {
-            this.#buildCheckActions()
             this.#buildCombatActions()
             this.#buildItems()
             this.#buildTravel()
+            this.#buildResource('resource', 'feature')
         }
 
         /**
@@ -51,10 +51,10 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         #buildNPCActions () {
-            this.#buildCheckActions()
             this.#buildCombatActions()
             this.#buildItems()
             this.#buildTravel()
+            this.#buildResource('resource', 'feature')
         }
 
         /**
@@ -63,6 +63,95 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @returns {object}
          */
         #buildMultipleTokenActions () {
+        }
+
+        /**
+         * Build resource actions (with increase/decrease buttons for items with system.rp.current)
+         * @private
+         * @param {string} actionType   The type of action (e.g., 'resource')
+         * @param {string} group        The group ID for categorizing the resources
+         */
+        async #buildResource (actionType, group) {
+            if (this.items.size === 0) return
+
+            const actionTypeId = actionType
+            const inventoryMap = new Map()
+            const manage = ['decrease', 'increase']
+            const typeId = 'resource'
+
+            // Map relevant item types to feature group IDs
+            const featureGroups = {
+                miscAbility: 'feature_miscAbility',
+                ritual: 'feature_ritual',
+                optionalFeature: 'feature_optionalFeature'
+            }
+
+            // Group and categorize items in the inventory
+            for (const [itemId, itemData] of this.items) {
+                const type = itemData.type
+                const typeMap = inventoryMap.get(type) ?? new Map()
+                typeMap.set(itemId, itemData)
+                inventoryMap.set(type, typeMap)
+            }
+
+            // Loop through categorized items and create resource actions
+            for (const [type, typeMap] of inventoryMap) {
+                // Check if the item type is one of the relevant types
+                if (!Object.keys(featureGroups).includes(type)) continue
+
+                // Get the corresponding group ID for this type
+                const featureGroupId = featureGroups[type];
+
+                [...typeMap].forEach(([itemId, itemData]) => {
+                    const hasResource = itemData.system?.hasResource?.value
+
+                    // Only add actions for items with resource points (rp)
+                    if (hasResource) {
+                        // Create group for the item
+                        const groupName = itemData.name
+                        const group = {
+                            id: featureGroupId,
+                            name: groupName,
+                            type: 'system-derived',
+                            settings: { showTitle: false }
+                        }
+                        this.addGroup(group, { id: 'resource', type: 'system' })
+
+                        // Create actions for decrease, increase, and current resource display
+                        const resourceId = itemId
+                        const resourceName = itemData.name
+                        const actionTypeName = coreModule.api.Utils.i18n(ACTION_TYPE[actionTypeId])
+                        const resourceListName = `${actionTypeName ? `${actionTypeName}: ` : ''}${resourceName}`
+                        const resourceEncodedValue = [actionTypeId, resourceId].join(this.delimiter)
+                        const resourceGroup = { id: featureGroupId, type: 'system-derived' }
+                        const rpCurrent = `${itemData.system.rp.current}`
+                        const info1 = { text: resourceName, title: 'baseitem' }
+
+                        const actions = []
+
+                        // Add decrease/increase buttons
+                        manage.forEach(manageAction => {
+                            const id = manageAction + '-' + resourceId
+                            const name = manageAction === 'decrease' ? '-' : '+'
+                            const listName = `${resourceName ? `${resourceName}: ` : ''}${manageAction}`
+                            const encodedValue = [typeId, id].join(this.delimiter)
+                            actions.push({ id, name, listName, encodedValue })
+                        })
+
+                        actions.push({
+                            id: resourceId,
+                            name: rpCurrent,
+                            listName: resourceListName,
+                            encodedValue: resourceEncodedValue,
+                            info1,
+                            cssClass: 'active'
+                        })
+
+                        // Add the actions to the group
+                        this.addActions(actions, resourceGroup)
+                    }
+                })
+            }
         }
 
         /**
