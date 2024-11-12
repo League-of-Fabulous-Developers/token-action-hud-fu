@@ -50,9 +50,9 @@
         "type": "module",
         "compatibility": [
           {
-            "minimum": "1.5.0",
-            "maximum": "1.5",
-            "verified": "1.5.0"
+            "minimum": "2.0.0",
+            "maximum": "2.0.99",
+            "verified": "2.0"
           }
         ]
       }
