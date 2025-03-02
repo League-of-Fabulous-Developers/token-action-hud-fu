@@ -21,7 +21,7 @@ export const REQUIRED_CORE_MODULE_VERSION = '2.0'
  * Action types
  */
 export const ACTION_TYPE = {
-    basic: 'TYPES.Ittem.basic',
+    basic: 'TYPES.Item.basic',
     weapon: 'TYPES.Item.weapon',
     shield: 'TYPES.Item.shield',
     armor: 'TYPES.Item.armor',

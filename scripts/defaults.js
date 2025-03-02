@@ -14,6 +14,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         )}: ${coreModule.api.Utils.i18n(group.listName ?? group.name)}`
     })
     const groupsArray = Object.values(groups)
+    console.info('Initializing token action hud layout for FU')
     DEFAULTS = {
         layout: [
             {
@@ -26,12 +27,20 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 ]
             },
             {
+                nestId: 'attack',
+                id: 'attack',
+                name: coreModule.api.Utils.i18n('Attack'),
+                groups: [
+                    { ...groups.basic, nestId: 'attack_basic' },
+                    { ...groups.weapon, nestId: 'attack_weapon' }
+                ]
+            },
+            {
                 nestId: 'feature',
                 id: 'feature',
                 name: coreModule.api.Utils.i18n('Feature'),
                 groups: [
-                    { ...groups.basic, nestId: 'feature_basic' },
-                    { ...groups.spell, nestId: 'feature_spell' },
+                    { ...groups.skill, nestId: 'feature_skill' },
                     { ...groups.miscAbility, nestId: 'feature_miscAbility' },
                     { ...groups.rule, nestId: 'feature_rule' },
                     { ...groups.ritual, nestId: 'feature_ritual' },
@@ -41,17 +50,33 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 ]
             },
             {
+                nestId: 'spell',
+                id: 'spell',
+                name: coreModule.api.Utils.i18n('Spell'),
+                groups: [
+                    { ...groups.spell, nestId: 'spell_spell' },
+                    { ...groups.ritual, nestId: 'spell_ritual' }
+                ]
+            },
+            {
                 nestId: 'item',
                 id: 'item',
                 name: coreModule.api.Utils.i18n('Items'),
                 groups: [
                     { ...groups.equipped, nestId: 'item_equipped' },
-                    { ...groups.weapon, nestId: 'item_weapon' },
                     { ...groups.shield, nestId: 'item_shield' },
                     { ...groups.armor, nestId: 'item_armor' },
                     { ...groups.accessory, nestId: 'item_accessory' },
                     { ...groups.consumable, nestId: 'item_consumable' },
                     { ...groups.treasure, nestId: 'item_treasure' }
+                ]
+            },
+            {
+                nestId: 'effect',
+                id: 'effect',
+                name: coreModule.api.Utils.i18n('Effect'),
+                groups: [
+                    { ...groups.effect, nestId: 'effect_temporary' }
                 ]
             },
             {

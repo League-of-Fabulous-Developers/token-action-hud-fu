@@ -16,7 +16,7 @@
     "verified": "12"
   },
   "esmodules": [
-    "./scripts/init.js"
+    "./scripts/init.mjs"
   ],
   "scripts": [
   ],
@@ -50,9 +50,9 @@
         "type": "module",
         "compatibility": [
           {
-            "minimum": "2.0.0",
-            "maximum": "2.0.99",
-            "verified": "2.0"
+            "minimum": "2.0.7",
+            "maximum": "2.0.10",
+            "verified": "2.099"
           }
         ]
       }

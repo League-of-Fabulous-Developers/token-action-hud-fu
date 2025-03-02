@@ -76,6 +76,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             case 'action':
                 this.#handleCombatAction(event, actor, actionId, isShift)
                 break
+            case 'effect':
+                this.#handleEffectAction(event, actor, actionId)
+                break
             case 'utility':
                 this.#handleUtilityAction(token, actionId)
                 break
@@ -134,7 +137,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 Hooks.call('promptInitiativeCheckCalled', actor)
                 break
             case 'travelCheck':
-                game.lookfar.showTravelCheckDialog()
+                console.warn('Not yet implemented')
+                // game.lookfar.showTravelCheckDialog()
                 break
             default:
                 console.warn(`Unknown action ID: ${actionId}`)
@@ -152,6 +156,23 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         #handleItemAction (event, actor, actionId) {
             const item = actor.items.get(actionId)
             item.roll()
+        }
+
+        /**
+         * @param {Event} event
+         * @param {Object} actor
+         * @param {String} effectId
+         */
+        #handleEffectAction (event, actor, effectId) {
+            const isRightClick = event.type === 'contextmenu'
+            const effect = actor.effects.get(effectId)
+            console.debug(`Handling click event for effect ${effectId} = ${effect.name}; RightClick: ${isRightClick}`)
+            if (isRightClick) {
+                const canBeRemoved = !effect.statuses.has('crisis') && !effect.statuses.has('ko')
+                if (canBeRemoved) {
+                    effect.delete()
+                }
+            }
         }
 
         /**
