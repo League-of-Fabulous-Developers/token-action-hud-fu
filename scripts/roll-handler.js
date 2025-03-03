@@ -80,7 +80,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 this.#handleEffectAction(event, actor, actionId)
                 break
             case 'utility':
-                this.#handleUtilityAction(token, actionId)
+                this.#handleUtilityAction(event, actor, token, actionId)
                 break
             }
         }
@@ -191,15 +191,16 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         /**
          * Handle utility action
          * @private
+         * @param {Event} event
+         * @param {Object} actor
          * @param {object} token    The token
          * @param {string} actionId The action id
          */
-        async #handleUtilityAction (token, actionId) {
+        async #handleUtilityAction (event, actor, token, actionId) {
             switch (actionId) {
-            case 'endTurn':
-                if (game.combat?.current?.tokenId === token.id) {
-                    await game.combat?.nextTurn()
-                }
+            case 'rest':
+                // Really
+                actor.sheet.onRest(actor)
                 break
             }
         }

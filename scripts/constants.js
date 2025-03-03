@@ -95,7 +95,10 @@ export const GROUP = {
     // Utility Labels
     combat: { id: 'combat', name: 'tokenActionHud.combat', type: 'system' },
     token: { id: 'token', name: 'tokenActionHud.token', type: 'system' },
-    utility: { id: 'utility', name: 'tokenActionHud.utility', type: 'system' }
+    utility: { id: 'utility', name: 'tokenActionHud.utility', type: 'system' },
+
+    // Downtime
+    downtime: { id: 'downtime', name: 'FU.Downtime', type: 'system' }
 }
 
 /**

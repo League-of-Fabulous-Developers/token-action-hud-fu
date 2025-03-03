@@ -45,6 +45,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             this.#buildItems()
             // this.#buildTravel()
             this.#buildEffects()
+            this.#buildDowntimeActions()
         }
 
         /**
@@ -164,11 +165,11 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             }
 
             const typeId = 'effect'
-            const groupId = 'effect' // Group ID for combat actions
+            const groupId = 'effect'
 
             /** @type {ActiveEffect[]} **/
-            const effects = this.actor.temporaryEffects
-            const actions = effects.map(effect => {
+            const temporaryEffects = this.actor.temporaryEffects
+            const tempActions = temporaryEffects.map(effect => {
                 return {
                     id: effect.id,
                     name: coreModule.api.Utils.i18n(effect.name),
@@ -177,8 +178,30 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     encodedValue: [typeId, effect.id].join(this.delimiter) // Ensure delimiter is defined
                 }
             })
+            const tempGroupData = { id: groupId, type: 'system' }
+            this.addActions(tempActions, tempGroupData)
+
+            // TODO: Add passive effects
+        }
+
+        /**
+         * @description Active Effects on the actor
+         * @returns {Promise<void>}
+         */
+        async #buildDowntimeActions () {
+            const actionTypeId = 'utility'
+            const groupId = 'downtime'
+
+            const restAction = {
+                id: 'rest',
+                name: coreModule.api.Utils.i18n('Rest'),
+                listName: 'Rest',
+                encodedValue: [actionTypeId, 'rest'].join(this.delimiter)
+            }
+
+            // Add the travel action to the "Travel" group
             const groupData = { id: groupId, type: 'system' }
-            this.addActions(actions, groupData)
+            this.addActions([restAction], groupData)
         }
 
         /**
