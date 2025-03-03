@@ -97,6 +97,11 @@ export const GROUP = {
     token: { id: 'token', name: 'tokenActionHud.token', type: 'system' },
     utility: { id: 'utility', name: 'tokenActionHud.utility', type: 'system' },
 
+    // Effects
+    temporaryEffect: { id: 'temporaryEffect', name: 'FU.TemporaryEffects', type: 'system' },
+    passiveEffect: { id: 'passiveEffect', name: 'FU.PassiveEffects', type: 'system' },
+    inactiveEffect: { id: 'inactiveEffect', name: 'FU.InactiveEffects', type: 'system' },
+
     // Downtime
     downtime: { id: 'downtime', name: 'FU.Downtime', type: 'system' }
 }

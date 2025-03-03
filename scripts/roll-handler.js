@@ -178,13 +178,20 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         #handleEffectAction (event, actor, effectId) {
             const isRightClick = event.type === 'contextmenu'
-            const effect = actor.effects.get(effectId)
+            // TODO: Provide a method in FUActor for this
+            // const effect = actor.effects.get(effectId)
+            const effect = Array.from(actor.allEffects()).find((value) => value.id === effectId)
             console.debug(`Handling click event for effect ${effectId} = ${effect.name}; RightClick: ${isRightClick}`)
-            if (isRightClick) {
+            const isTemporary = effect.isTemporary
+            if (isRightClick && isTemporary) {
                 const canBeRemoved = !effect.statuses.has('crisis') && !effect.statuses.has('ko')
                 if (canBeRemoved) {
                     effect.delete()
+                    this.#onUpdate()
                 }
+            } else { // Toggle the effect
+                effect.update({ disabled: !effect.disabled })
+                this.#onUpdate()
             }
         }
 
@@ -203,6 +210,13 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 actor.sheet.onRest(actor)
                 break
             }
+        }
+
+        /**
+         * @description Forces an update of the HUD
+         */
+        #onUpdate () {
+            Hooks.callAll('forceUpdateTokenActionHud')
         }
     }
 })

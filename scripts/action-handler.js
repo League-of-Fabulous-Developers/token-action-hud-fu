@@ -165,11 +165,11 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             }
 
             const typeId = 'effect'
-            const groupId = 'effect'
+            const tempGroupId = 'temporaryEffect'
+            const passiveGroupId = 'passiveEffect'
+            const inactiveGroupId = 'inactiveEffect'
 
-            /** @type {ActiveEffect[]} **/
-            const temporaryEffects = this.actor.temporaryEffects
-            const tempActions = temporaryEffects.map(effect => {
+            const getAction = (effect) => {
                 return {
                     id: effect.id,
                     name: coreModule.api.Utils.i18n(effect.name),
@@ -177,11 +177,49 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     img: coreModule.api.Utils.getImage(effect),
                     encodedValue: [typeId, effect.id].join(this.delimiter) // Ensure delimiter is defined
                 }
-            })
-            const tempGroupData = { id: groupId, type: 'system' }
-            this.addActions(tempActions, tempGroupData)
+            }
 
-            // TODO: Add passive effects
+            /**
+             * @param {Object[]} actions
+             * @param {String} groupId
+             */
+            const addEffectGroup = (actions, groupId) => {
+                const groupData = { id: groupId, type: 'system' }
+                this.addActions(actions, groupData)
+            }
+
+            const temporaryEffects = []
+            const passiveEffects = []
+            const inactiveEffects = []
+
+            /** @type Object[] **/
+            const effects = this.actor.effects // Array.from(this.actor.allEffects())
+            for (const effect of effects) {
+                const action = getAction(effect)
+                if (effect.disabled) {
+                    inactiveEffects.push(action)
+                } else if (effect.isTemporary) {
+                    temporaryEffects.push(action)
+                } else {
+                    passiveEffects.push(action)
+                }
+            }
+
+            // Special case for temporary effects on items
+            for (const item of this.actor.items) {
+                if (item.system.transferEffects instanceof Function ? item.system.transferEffects() : true) {
+                    for (const effect of item.effects) {
+                        if (effect.isTemporary && effect.target === item) {
+                            const action = getAction(effect)
+                            temporaryEffects.push(action)
+                        }
+                    }
+                }
+            }
+
+            addEffectGroup(temporaryEffects, tempGroupId)
+            addEffectGroup(passiveEffects, passiveGroupId)
+            addEffectGroup(inactiveEffects, inactiveGroupId)
         }
 
         /**
