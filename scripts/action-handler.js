@@ -160,16 +160,13 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @returns {Promise<void>}
          */
         async #buildEffects () {
-            if (this.effects.size === 0) {
-                return
-            }
 
             const typeId = 'effect'
-            const groupId = 'effect'
+            const tempGroupId = 'temporaryEffect'
+            const passiveGroupId = 'passiveEffect'
+            const inactiveGroupId = 'inactiveEffect'
 
-            /** @type {ActiveEffect[]} **/
-            const temporaryEffects = this.actor.temporaryEffects
-            const tempActions = temporaryEffects.map(effect => {
+            const getAction = (effect) => {
                 return {
                     id: effect.id,
                     name: coreModule.api.Utils.i18n(effect.name),
@@ -177,11 +174,26 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     img: coreModule.api.Utils.getImage(effect),
                     encodedValue: [typeId, effect.id].join(this.delimiter) // Ensure delimiter is defined
                 }
-            })
-            const tempGroupData = { id: groupId, type: 'system' }
-            this.addActions(tempActions, tempGroupData)
+            }
 
-            // TODO: Add passive effects
+            /**
+             * @param {Object[]} actions
+             * @param {String} groupId
+             */
+            const addEffectGroup = (actions, groupId) => {
+                const groupData = { id: groupId, type: 'system' }
+                this.addActions(actions, groupData)
+            }
+
+            // Prepare active effects
+            const effects = this.actor.effectCategories;
+            const temporaryEffects = effects.temporary.effects.map(getAction);
+            const passiveEffects = effects.passive.effects.map(getAction);
+            const inactiveEffects = effects.inactive.effects.map(getAction);
+
+            addEffectGroup(temporaryEffects, tempGroupId)
+            addEffectGroup(passiveEffects, passiveGroupId)
+            addEffectGroup(inactiveEffects, inactiveGroupId)
         }
 
         /**

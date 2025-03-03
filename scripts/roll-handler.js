@@ -14,7 +14,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         async handleActionClick (event, encodedValue) {
             const [actionTypeId, actionId] = encodedValue.split('|')
-
             const isShift = this.shift
 
             const renderable = ['item']
@@ -178,13 +177,25 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         #handleEffectAction (event, actor, effectId) {
             const isRightClick = event.type === 'contextmenu'
-            const effect = actor.effects.get(effectId)
+            const effect = Array.from(actor.allEffects()).find((value) => value.id === effectId)
             console.debug(`Handling click event for effect ${effectId} = ${effect.name}; RightClick: ${isRightClick}`)
-            if (isRightClick) {
-                const canBeRemoved = !effect.statuses.has('crisis') && !effect.statuses.has('ko')
-                if (canBeRemoved) {
+            const canBeManaged = !effect.statuses.has('crisis') && !effect.statuses.has('ko')
+            if (isRightClick && canBeManaged) {
+                // Don't allow deleting temporary effects from skills
+                const isTemporary = effect.isTemporary && effect.parent.type !== 'skill';
+                // Remove
+                if (isTemporary) {
                     effect.delete()
+                    this.#onUpdate()
                 }
+                // Toggle the effect
+                else{
+                    effect.update({ disabled: !effect.disabled })
+                    this.#onUpdate()
+                }
+
+            } else {
+                //this.doRenderItem(actor, effectId)
             }
         }
 
@@ -203,6 +214,13 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 actor.sheet.onRest(actor)
                 break
             }
+        }
+
+        /**
+         * @description Forces an update of the HUD
+         */
+        #onUpdate () {
+            Hooks.callAll('forceUpdateTokenActionHud')
         }
     }
 })

@@ -76,7 +76,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 id: 'effect',
                 name: coreModule.api.Utils.i18n('Effect'),
                 groups: [
-                    { ...groups.effect, nestId: 'effect_temporary' }
+                    { ...groups.temporaryEffect, nestId: 'effect_temporary' },
+                    { ...groups.passiveEffect, nestId: 'effect_passive' },
+                    { ...groups.inactiveEffect, nestId: 'effect_inactive' }
                 ]
             },
             {
