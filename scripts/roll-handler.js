@@ -147,15 +147,28 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         }
 
         /**
+         * @typedef KeyboardModifiers
+         * @property {boolean} shift
+         * @property {boolean} alt
+         * @property {boolean} ctrl
+         * @property {boolean} meta
+         */
+
+        /**
          * Handle item action
          * @private
-         * @param {object} event    The event
+         * @param {Event} event    The event
          * @param {object} actor    The actor
          * @param {string} actionId The action id
          */
         #handleItemAction (event, actor, actionId) {
             const item = actor.items.get(actionId)
-            item.roll()
+            /** @type KeyboardModifiers **/
+            const modifiers = {
+                shift: event.shiftKey,
+                ctrl: event.ctrlKey
+            }
+            item.roll(modifiers)
         }
 
         /**
