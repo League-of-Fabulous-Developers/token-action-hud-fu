@@ -14,7 +14,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         async handleActionClick (event, encodedValue) {
             const [actionTypeId, actionId] = encodedValue.split('|')
-
             const isShift = this.shift
 
             const renderable = ['item']
@@ -76,8 +75,11 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             case 'action':
                 this.#handleCombatAction(event, actor, actionId, isShift)
                 break
+            case 'effect':
+                this.#handleEffectAction(event, actor, actionId)
+                break
             case 'utility':
-                this.#handleUtilityAction(token, actionId)
+                this.#handleUtilityAction(event, actor, token, actionId)
                 break
             }
         }
@@ -134,7 +136,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 Hooks.call('promptInitiativeCheckCalled', actor)
                 break
             case 'travelCheck':
-                game.lookfar.showTravelCheckDialog()
+                console.warn('Not yet implemented')
+                // game.lookfar.showTravelCheckDialog()
                 break
             default:
                 console.warn(`Unknown action ID: ${actionId}`)
@@ -143,31 +146,81 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         }
 
         /**
+         * @typedef KeyboardModifiers
+         * @property {boolean} shift
+         * @property {boolean} alt
+         * @property {boolean} ctrl
+         * @property {boolean} meta
+         */
+
+        /**
          * Handle item action
          * @private
-         * @param {object} event    The event
+         * @param {Event} event    The event
          * @param {object} actor    The actor
          * @param {string} actionId The action id
          */
         #handleItemAction (event, actor, actionId) {
             const item = actor.items.get(actionId)
-            item.roll()
+            /** @type KeyboardModifiers **/
+            const modifiers = {
+                shift: event.shiftKey,
+                ctrl: event.ctrlKey
+            }
+            item.roll(modifiers)
+        }
+
+        /**
+         * @param {Event} event
+         * @param {Object} actor
+         * @param {String} effectId
+         */
+        #handleEffectAction (event, actor, effectId) {
+            const isRightClick = event.type === 'contextmenu'
+            const effect = Array.from(actor.allEffects()).find((value) => value.id === effectId)
+            console.debug(`Handling click event for effect ${effectId} = ${effect.name}; RightClick: ${isRightClick}`)
+            const canBeManaged = !effect.statuses.has('crisis') && !effect.statuses.has('ko')
+            if (isRightClick && canBeManaged) {
+                // Don't allow deleting temporary effects from skills
+                const isTemporary = effect.isTemporary && effect.parent.type !== 'skill';
+                // Remove
+                if (isTemporary) {
+                    effect.delete()
+                    this.#onUpdate()
+                }
+                // Toggle the effect
+                else{
+                    effect.update({ disabled: !effect.disabled })
+                    this.#onUpdate()
+                }
+
+            } else {
+                //this.doRenderItem(actor, effectId)
+            }
         }
 
         /**
          * Handle utility action
          * @private
+         * @param {Event} event
+         * @param {Object} actor
          * @param {object} token    The token
          * @param {string} actionId The action id
          */
-        async #handleUtilityAction (token, actionId) {
+        async #handleUtilityAction (event, actor, token, actionId) {
             switch (actionId) {
-            case 'endTurn':
-                if (game.combat?.current?.tokenId === token.id) {
-                    await game.combat?.nextTurn()
-                }
+            case 'rest':
+                // Really
+                actor.sheet.onRest(actor)
                 break
             }
+        }
+
+        /**
+         * @description Forces an update of the HUD
+         */
+        #onUpdate () {
+            Hooks.callAll('forceUpdateTokenActionHud')
         }
     }
 })

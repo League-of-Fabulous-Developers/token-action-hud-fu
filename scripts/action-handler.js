@@ -6,6 +6,7 @@ export let ActionHandler = null
 Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
     /**
      * Extends Token Action HUD Core's ActionHandler class and builds system-defined actions for the HUD
+     * @remarks https://github.com/Larkinabout/fvtt-token-action-hud-core/wiki/Core-Changes-for-System-Module-Developers
      */
     ActionHandler = class ActionHandler extends coreModule.api.ActionHandler {
         /**
@@ -15,8 +16,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {array} groupIds
          */
         async buildSystemActions (groupIds) {
-            // Set actor and token variables
-            this.actors = (!this.actor) ? this._getActors() : [this.actor]
             this.actorType = this.actor?.type
 
             // Set items variable
@@ -24,6 +23,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 let items = this.actor.items
                 items = coreModule.api.Utils.sortItemsByName(items)
                 this.items = items
+                this.effects = this.actor.effects
             }
 
             if (this.actorType === 'character') {
@@ -43,7 +43,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             this.#buildCheckActions()
             this.#buildCombatActions()
             this.#buildItems()
-            this.#buildTravel()
+            // this.#buildTravel()
+            this.#buildEffects()
+            this.#buildDowntimeActions()
         }
 
         /**
@@ -54,7 +56,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             this.#buildCheckActions()
             this.#buildCombatActions()
             this.#buildItems()
-            this.#buildTravel()
+            this.#buildEffects()
         }
 
         /**
@@ -154,6 +156,67 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         }
 
         /**
+         * @description Active Effects on the actor
+         * @returns {Promise<void>}
+         */
+        async #buildEffects () {
+
+            const typeId = 'effect'
+            const tempGroupId = 'temporaryEffect'
+            const passiveGroupId = 'passiveEffect'
+            const inactiveGroupId = 'inactiveEffect'
+
+            const getAction = (effect) => {
+                return {
+                    id: effect.id,
+                    name: coreModule.api.Utils.i18n(effect.name),
+                    listName: effect.name,
+                    img: coreModule.api.Utils.getImage(effect),
+                    encodedValue: [typeId, effect.id].join(this.delimiter) // Ensure delimiter is defined
+                }
+            }
+
+            /**
+             * @param {Object[]} actions
+             * @param {String} groupId
+             */
+            const addEffectGroup = (actions, groupId) => {
+                const groupData = { id: groupId, type: 'system' }
+                this.addActions(actions, groupData)
+            }
+
+            // Prepare active effects
+            const effects = this.actor.effectCategories;
+            const temporaryEffects = effects.temporary.effects.map(getAction);
+            const passiveEffects = effects.passive.effects.map(getAction);
+            const inactiveEffects = effects.inactive.effects.map(getAction);
+
+            addEffectGroup(temporaryEffects, tempGroupId)
+            addEffectGroup(passiveEffects, passiveGroupId)
+            addEffectGroup(inactiveEffects, inactiveGroupId)
+        }
+
+        /**
+         * @description Active Effects on the actor
+         * @returns {Promise<void>}
+         */
+        async #buildDowntimeActions () {
+            const actionTypeId = 'utility'
+            const groupId = 'downtime'
+
+            const restAction = {
+                id: 'rest',
+                name: coreModule.api.Utils.i18n('Rest'),
+                listName: 'Rest',
+                encodedValue: [actionTypeId, 'rest'].join(this.delimiter)
+            }
+
+            // Add the travel action to the "Travel" group
+            const groupData = { id: groupId, type: 'system' }
+            this.addActions([restAction], groupData)
+        }
+
+        /**
          * Build Inventory Actions for the HUD, including equipped items.
          * @private
          *
@@ -171,7 +234,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             const slots = ['mainHand', 'offHand', 'phantom', 'armor', 'accessory', 'arcanum']
             const equippedItemIds = new Set() // Store equipped item IDs
 
-            // Gather equipped items from slots
             for (const slot of slots) {
                 const equippedItemId = this.actor.system.equipped[slot]
                 if (equippedItemId) equippedItemIds.add(equippedItemId)
@@ -179,6 +241,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
             // Categorize items in the inventory
             for (const [itemId, itemData] of this.items) {
+                if (itemData.type === 'weapon' && this.actorType === 'npc') {
+                    continue
+                }
                 const typeMap = inventoryMap.get(itemData.type) ?? new Map()
                 typeMap.set(itemId, itemData)
                 inventoryMap.set(itemData.type, typeMap)
@@ -199,11 +264,13 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     const actionTypeName = coreModule.api.Utils.i18n(ACTION_TYPE[actionTypeId])
                     const listName = `${actionTypeName ? `${actionTypeName}: ` : ''}${name}<br>${description}`
                     const encodedValue = [actionTypeId, id].join(this.delimiter)
+                    const img = coreModule.api.Utils.getImage(itemData)
 
                     return {
                         id,
                         name,
                         listName,
+                        img,
                         encodedValue
                     }
                 })
@@ -219,11 +286,13 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 const actionTypeName = coreModule.api.Utils.i18n(ACTION_TYPE[actionTypeId])
                 const listName = `${actionTypeName ? `${actionTypeName}: ` : ''}${name}<br>${description}`
                 const encodedValue = [actionTypeId, id].join(this.delimiter)
+                const img = coreModule.api.Utils.getImage(itemData)
 
                 return {
                     id,
                     name,
                     listName,
+                    img,
                     encodedValue
                 }
             })
