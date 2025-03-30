@@ -65,6 +65,6 @@
   "socket": false,
   "manifest": "#{MANIFEST}#",
   "download": "#{DOWNLOAD}#",
-  "readme": "https://github.com/League-of-Fabulous-Developers/fvtt-token-action-hud-fu#readme",
+  "readme": "#{URL}#",
   "library": false
 }
