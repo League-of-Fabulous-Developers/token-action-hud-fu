@@ -8,9 +8,9 @@
       "url": "https://github.com/spyrella"
     }
   ],
-  "url": "This is auto replaced",
+  "url": "#{URL}",
   "flags": {},
-  "version": "This is auto replaced",
+  "version": "#{VERSION}",
   "compatibility": {
     "minimum": "11",
     "verified": "12"
