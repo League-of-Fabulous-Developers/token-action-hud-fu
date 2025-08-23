@@ -13,9 +13,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * Build system actions
          * Called by Token Action HUD Core
          * @override
-         * @param {array} groupIds
          */
-        async buildSystemActions (groupIds) {
+        async buildSystemActions () {
             this.actorType = this.actor?.type
 
             // Set items variable
@@ -160,7 +159,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @returns {Promise<void>}
          */
         async #buildEffects () {
-
             const typeId = 'effect'
             const tempGroupId = 'temporaryEffect'
             const passiveGroupId = 'passiveEffect'
@@ -186,10 +184,10 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             }
 
             // Prepare active effects
-            const effects = this.actor.effectCategories;
-            const temporaryEffects = effects.temporary.effects.map(getAction);
-            const passiveEffects = effects.passive.effects.map(getAction);
-            const inactiveEffects = effects.inactive.effects.map(getAction);
+            const effects = this.actor.effectCategories
+            const temporaryEffects = effects.temporary.effects.map(getAction)
+            const passiveEffects = effects.passive.effects.map(getAction)
+            const inactiveEffects = effects.inactive.effects.map(getAction)
 
             addEffectGroup(temporaryEffects, tempGroupId)
             addEffectGroup(passiveEffects, passiveGroupId)

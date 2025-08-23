@@ -14,12 +14,12 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         async handleActionClick (event, encodedValue) {
             const [actionTypeId, actionId] = encodedValue.split('|')
-            const isShift = this.shift
+            const isShift = this.isShift
 
             const renderable = ['item']
 
             if (renderable.includes(actionTypeId) && this.isRenderItem()) {
-                return this.doRenderItem(this.actor, actionId)
+                return this.renderItem(this.actor, actionId)
             }
 
             const knownCharacters = ['character']
@@ -100,28 +100,28 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
             switch (actionId) {
             case 'equipmentAction':
-                await combatActionHandler.handleAction('equipmentAction', isShift)
+                await combatActionHandler.handleAction('equipment', isShift)
                 break
             case 'guardAction':
-                await combatActionHandler.handleAction('guardAction', isShift)
+                await combatActionHandler.handleAction('guard', isShift)
                 break
             case 'hinderAction':
-                await combatActionHandler.handleAction('hinderAction', isShift)
+                await combatActionHandler.handleAction('hinder', isShift)
                 break
             case 'inventoryAction':
-                await combatActionHandler.handleAction('inventoryAction', isShift)
+                await combatActionHandler.handleAction('inventory', isShift)
                 break
             case 'objectiveAction':
-                await combatActionHandler.handleAction('objectiveAction', isShift)
+                await combatActionHandler.handleAction('objective', isShift)
                 break
             case 'spellAction':
-                await combatActionHandler.handleAction('spellAction', isShift)
+                await combatActionHandler.handleAction('spell', isShift)
                 break
             case 'studyAction':
-                await combatActionHandler.handleAction('studyAction', isShift)
+                await combatActionHandler.handleAction('study', isShift)
                 break
             case 'skillAction':
-                await combatActionHandler.handleAction('skillAction', isShift)
+                await combatActionHandler.handleAction('skill', isShift)
                 break
             case 'attributeCheck':
                 Hooks.call('promptAttributeCheckCalled', actor)
@@ -182,20 +182,18 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             const canBeManaged = !effect.statuses.has('crisis') && !effect.statuses.has('ko')
             if (isRightClick && canBeManaged) {
                 // Don't allow deleting temporary effects from skills
-                const isTemporary = effect.isTemporary && effect.parent.type !== 'skill';
+                const isTemporary = effect.isTemporary && effect.parent.type !== 'skill'
                 // Remove
                 if (isTemporary) {
                     effect.delete()
                     this.#onUpdate()
-                }
-                // Toggle the effect
-                else{
+                } else {
+                    // Toggle the effect
                     effect.update({ disabled: !effect.disabled })
                     this.#onUpdate()
                 }
-
             } else {
-                //this.doRenderItem(actor, effectId)
+                // this.renderItem(actor, effectId)
             }
         }
 
@@ -211,7 +209,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             switch (actionId) {
             case 'rest':
                 // Really
-                actor.sheet.onRest(actor)
+                actor.rest()
                 break
             }
         }

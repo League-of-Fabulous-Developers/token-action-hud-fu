@@ -1,3 +1,4 @@
+/* 
 :root {
     --tah-background-color: #00000000;
     --tah-border-radius: 10px;
@@ -495,4 +496,4 @@
 
 .tah-subtitle > .tah-icon > :is(.fa, .fas) {
     text-shadow: var(--tah-text-shadow);
-}
+} */

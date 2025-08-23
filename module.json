@@ -13,7 +13,7 @@
   "version": "#{VERSION}#",
   "compatibility": {
     "minimum": "11",
-    "verified": "12"
+    "verified": "13"
   },
   "esmodules": [
     "./scripts/init.mjs"
@@ -50,9 +50,8 @@
         "type": "module",
         "compatibility": [
           {
-            "minimum": "2.0.7",
-            "maximum": "2.0.10",
-            "verified": "2.099"
+            "minimum": "2.0.0",
+            "verified": "2.0.0"
           }
         ]
       }
