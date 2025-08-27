@@ -18,15 +18,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
     DEFAULTS = {
         layout: [
             {
-                nestId: 'action',
-                id: 'action',
-                name: coreModule.api.Utils.i18n('Action'),
-                groups: [
-                    { ...groups.check, nestId: 'action_check' },
-                    { ...groups.action, nestId: 'action_action' }
-                ]
-            },
-            {
                 nestId: 'attack',
                 id: 'attack',
                 name: coreModule.api.Utils.i18n('Attack'),
@@ -38,13 +29,13 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             {
                 nestId: 'feature',
                 id: 'feature',
-                name: coreModule.api.Utils.i18n('Feature'),
+                name: coreModule.api.Utils.i18n('Skill'),
                 groups: [
                     { ...groups.skill, nestId: 'feature_skill' },
                     { ...groups.miscAbility, nestId: 'feature_miscAbility' },
-                    { ...groups.rule, nestId: 'feature_rule' },
-                    { ...groups.ritual, nestId: 'feature_ritual' },
-                    { ...groups.project, nestId: 'feature_project' },
+                    // { ...groups.rule, nestId: 'feature_rule' },
+                    // { ...groups.ritual, nestId: 'feature_ritual' },
+                    // { ...groups.project, nestId: 'feature_project' },
                     { ...groups.classFeature, nestId: 'feature_classFeature' },
                     { ...groups.optionalFeature, nestId: 'feature_optionalFeature' }
                 ]
@@ -55,7 +46,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 name: coreModule.api.Utils.i18n('Spell'),
                 groups: [
                     { ...groups.spell, nestId: 'spell_spell' },
-                    { ...groups.ritual, nestId: 'spell_ritual' }
+                    // { ...groups.ritual, nestId: 'spell_ritual' }
                 ]
             },
             {
@@ -63,36 +54,45 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 id: 'item',
                 name: coreModule.api.Utils.i18n('Items'),
                 groups: [
-                    { ...groups.equipped, nestId: 'item_equipped' },
-                    { ...groups.shield, nestId: 'item_shield' },
-                    { ...groups.armor, nestId: 'item_armor' },
-                    { ...groups.accessory, nestId: 'item_accessory' },
                     { ...groups.consumable, nestId: 'item_consumable' },
-                    { ...groups.treasure, nestId: 'item_treasure' }
+                    { ...groups.equipped, nestId: 'item_equipped' },
+                    // { ...groups.shield, nestId: 'item_shield' },
+                    // { ...groups.armor, nestId: 'item_armor' },
+                    // { ...groups.accessory, nestId: 'item_accessory' },
+                    // { ...groups.treasure, nestId: 'item_treasure' }
                 ]
             },
             {
-                nestId: 'effect',
-                id: 'effect',
-                name: coreModule.api.Utils.i18n('Effect'),
+                nestId: 'action',
+                id: 'action',
+                name: coreModule.api.Utils.i18n('Action'),
                 groups: [
-                    { ...groups.temporaryEffect, nestId: 'effect_temporary' },
-                    { ...groups.passiveEffect, nestId: 'effect_passive' },
-                    { ...groups.inactiveEffect, nestId: 'effect_inactive' }
+                    { ...groups.action, nestId: 'action_action' },
+                    // { ...groups.check, nestId: 'action_check' }
                 ]
             },
-            {
-                nestId: 'utility',
-                id: 'utility',
-                name: coreModule.api.Utils.i18n('tokenActionHud.utility'),
-                groups: [
-                    { ...groups.combat, nestId: 'utility_combat' },
-                    { ...groups.token, nestId: 'utility_token' },
-                    { ...groups.rests, nestId: 'utility_rests' },
-                    { ...groups.utility, nestId: 'utility_utility' },
-                    { ...groups.downtime, nestId: 'utility_downtime' }
-                ]
-            }
+            // {
+            //     nestId: 'effect',
+            //     id: 'effect',
+            //     name: coreModule.api.Utils.i18n('Effect'),
+            //     groups: [
+            //         { ...groups.temporaryEffect, nestId: 'effect_temporary' },
+            //         { ...groups.passiveEffect, nestId: 'effect_passive' },
+            //         { ...groups.inactiveEffect, nestId: 'effect_inactive' }
+            //     ]
+            // },
+            // {
+            //     nestId: 'utility',
+            //     id: 'utility',
+            //     name: coreModule.api.Utils.i18n('tokenActionHud.utility'),
+            //     groups: [
+            //         { ...groups.combat, nestId: 'utility_combat' },
+            //         { ...groups.token, nestId: 'utility_token' },
+            //         { ...groups.rests, nestId: 'utility_rests' },
+            //         { ...groups.utility, nestId: 'utility_utility' },
+            //         { ...groups.downtime, nestId: 'utility_downtime' }
+            //     ]
+            // }
         ],
         groups: groupsArray
     }
