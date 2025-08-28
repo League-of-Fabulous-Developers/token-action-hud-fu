@@ -80,11 +80,17 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         registerStyles () {
             return {
-                template: {
-                    class: 'tah-style-fu-style', // The class to add to first DIV element
-                    file: 'tah-fu-style', // The file without the css extension
+                // fuDefault: {
+                //     class: 'tah-style-fu-style', // The class to add to first DIV element
+                //     file: 'tah-fu-style', // The file without the css extension
+                //     moduleId: MODULE.ID, // The module ID
+                //     name: 'PFU Style' // The name to display in the Token Action HUD Core 'Style' module setting
+                // },
+                fuPixel: {
+                    class: 'tah-style-pixel-style', // The class to add to first DIV element
+                    file: 'tah-fu-pixel', // The file without the css extension
                     moduleId: MODULE.ID, // The module ID
-                    name: 'PFU Style' // The name to display in the Token Action HUD Core 'Style' module setting
+                    name: 'Pixel Style' // The name to display in the Token Action HUD Core 'Style' module setting
                 }
             }
         }
