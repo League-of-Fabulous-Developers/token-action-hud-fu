@@ -16,6 +16,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         async buildSystemActions () {
             this.actorType = this.actor?.type
+            this.tooltipDirection = this.#getTooltipDirection()
 
             // Set items variable
             if (this.actor) {
@@ -104,26 +105,40 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         async #buildCombatActions () {
             const combatActions = [
-                { id: 'guardAction', name: 'Guard' },
-                { id: 'equipmentAction', name: 'Equipment' },
-                { id: 'hinderAction', name: 'Hinder' },
-                { id: 'inventoryAction', name: 'Inventory' },
-                { id: 'objectiveAction', name: 'Objective' },
-                { id: 'spellAction', name: 'Spell' },
-                { id: 'studyAction', name: 'Study' },
-                { id: 'skillAction', name: 'Skill' }
+                { id: 'guardAction', name: 'Guard', rule: 'FU.GuardRule' },
+                { id: 'equipmentAction', name: 'Equipment', rule: 'FU.EquipmentRule' },
+                { id: 'hinderAction', name: 'Hinder', rule: 'FU.HinderRule' },
+                { id: 'inventoryAction', name: 'Inventory', rule: 'FU.InventoryRule' },
+                { id: 'objectiveAction', name: 'Objective', rule: 'FU.ObjectiveRule' },
+                { id: 'spellAction', name: 'Spell', rule: 'FU.SpellRule' },
+                { id: 'studyAction', name: 'Study', rule: 'FU.StudyRule' },
+                { id: 'skillAction', name: 'Skill', rule: 'FU.SkillRule' }
             ]
 
             const actionTypeId = 'action'
             const combatGroupId = 'action' // Group ID for combat actions
 
             const actions = combatActions.map(action => {
-                return {
+                const actionObj = {
                     id: action.id,
                     name: coreModule.api.Utils.i18n(action.name),
                     listName: action.name,
                     encodedValue: [actionTypeId, action.id].join(this.delimiter) // Ensure delimiter is defined
                 }
+
+                // Add tooltip if action has rule text
+                if (action.rule) {
+                    const ruleText = coreModule.api.Utils.i18n(action.rule)
+                    if (ruleText && ruleText !== action.rule) { // Only if localization exists
+                        actionObj.tooltip = {
+                            content: `<h4>${actionObj.name}</h4><p>${ruleText}</p>`,
+                            class: 'tah-system-tooltip',
+                            direction: this.tooltipDirection
+                        }
+                    }
+                }
+
+                return actionObj
             })
 
             const combatGroupData = { id: combatGroupId, type: 'system' }
@@ -131,27 +146,92 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         }
 
         /**
-         * Build Travel Action actions for the HUD
-         *
-         * This method handle the construction of action buttons for all combat actions.
-         *
+         * Get tooltip direction based on TAH Core direction setting
          * @private
+         * @returns {string} The tooltip direction (UP, DOWN, LEFT, RIGHT, CENTER)
          */
-        async #buildTravel () {
-            const actionTypeId = 'action' // Action type identifier
-            const travelGroupId = 'check' // Group ID for the travel actions
+        #getTooltipDirection () {
+            const direction = game.settings.get('token-action-hud-core', 'direction') || 'auto'
 
-            // Define the travel action button
-            const travelAction = {
-                id: 'travelAction',
-                name: coreModule.api.Utils.i18n('Travel Check'), // Label for the action button
-                listName: 'Travel Check', // Tooltip or extended name
-                encodedValue: [actionTypeId, 'travelCheck'].join(this.delimiter) // Encoded value for the action
+            switch (direction) {
+            case 'up':
+                return 'DOWN'
+            case 'down':
+                return 'UP'
+            case 'auto':
+            default:
+                return 'DOWN'
+            }
+        }
+
+        /**
+         * Enrich item tooltip content with additional formatting and item properties
+         * @private
+         * @param {string} name The item name
+         * @param {string} description The item description
+         * @param {object} itemData The full item data object
+         * @returns {string} Enhanced HTML content
+         */
+        #enrichItemTooltip (name, description, itemData) {
+            const itemType = itemData.type.charAt(0).toUpperCase() + itemData.type.slice(1)
+            const stats = this.#getItemStats(itemData)
+
+            return `
+                <div class='tah-tooltip-header'>
+                    <h4>${name}</h4>
+                    <span class='tah-item-badge'>${itemType}</span>
+                </div>
+                <div class='tah-tooltip-body'>
+                    ${stats}
+                    ${description ? `<p>${description}</p>` : ''}
+                    <div class='tah-tooltip-hint'><em>Left-click to use ◆ Right-click for sheet</em></div>
+                </div>
+            `
+        }
+
+        /**
+         * Get formatted stats for different item types
+         * @private
+         * @param {object} itemData The item data object
+         * @returns {string} Formatted stats HTML
+         */
+        #getItemStats (itemData) {
+            const stats = []
+            const { system, type } = itemData
+
+            if (!system) return ''
+
+            // Handle spell
+            if (type === 'spell' && system.rollInfo) {
+                const accuracy = system.rollInfo.accuracy?.value
+                if (accuracy !== undefined) {
+                    const primary = system.rollInfo.attributes?.primary?.value || 'DEX'
+                    const secondary = system.rollInfo.attributes?.secondary?.value || 'INS'
+                    stats.push(`<strong>Accuracy:</strong> 【${primary.toUpperCase()} + ${secondary.toUpperCase()}】+${accuracy}`)
+                }
+
+                if (system.rollInfo.damage?.hasDamage?.value) {
+                    const damage = system.rollInfo.damage.value || 0
+                    const damageType = system.rollInfo.damage.type.value || 'Physical'
+                    stats.push(`<strong>Damage:</strong> 【HR + ${damage}】 ${damageType}`)
+                }
             }
 
-            // Add the travel action to the "Travel" group
-            const travelGroupData = { id: travelGroupId, type: 'system' }
-            this.addActions([travelAction], travelGroupData)
+            // Handle weapon/basic
+            if ((type === 'weapon' || type === 'basic') && system.damage) {
+                const accuracy = system.accuracy?.value
+                if (accuracy !== undefined) {
+                    const primary = system.attributes?.primary?.value || 'MIG'
+                    const secondary = system.attributes?.secondary?.value || 'MIG'
+                    stats.push(`<strong>Accuracy:</strong> 【${primary.toUpperCase()} + ${secondary.toUpperCase()}】+${accuracy}`)
+                }
+
+                const damage = system.damage.value || 0
+                const damageType = system.type?.value || 'Physical'
+                stats.push(`<strong>Damage:</strong> 【HR + ${damage}】 ${damageType}`)
+            }
+
+            return stats.length > 0 ? stats.map(stat => `<div class='tah-item-stats'>${stat}</div>`).join('') : ''
         }
 
         /**
@@ -165,13 +245,24 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             const inactiveGroupId = 'inactiveEffect'
 
             const getAction = (effect) => {
-                return {
+                const action = {
                     id: effect.id,
                     name: coreModule.api.Utils.i18n(effect.name),
                     listName: effect.name,
                     img: coreModule.api.Utils.getImage(effect),
                     encodedValue: [typeId, effect.id].join(this.delimiter) // Ensure delimiter is defined
                 }
+
+                // Add tooltip if effect has description
+                if (effect.description) {
+                    action.tooltip = {
+                        content: `<h4>${effect.name}</h4><p>${effect.description}</p>`,
+                        class: 'tah-system-tooltip',
+                        direction: this.#getTooltipDirection()
+                    }
+                }
+
+                return action
             }
 
             /**
@@ -264,13 +355,23 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     const encodedValue = [actionTypeId, id].join(this.delimiter)
                     const img = coreModule.api.Utils.getImage(itemData)
 
-                    return {
+                    // Add tooltip if item has description
+                    const action = {
                         id,
                         name,
                         listName,
                         img,
                         encodedValue
                     }
+
+                    // Always show tooltip for items (even without description)
+                    action.tooltip = {
+                        content: this.#enrichItemTooltip(name, description, itemData),
+                        class: 'tah-system-tooltip',
+                        direction: this.tooltipDirection
+                    }
+
+                    return action
                 })
 
                 this.addActions(actions, groupData) // Add actions to the group
@@ -286,13 +387,22 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 const encodedValue = [actionTypeId, id].join(this.delimiter)
                 const img = coreModule.api.Utils.getImage(itemData)
 
-                return {
+                const action = {
                     id,
                     name,
                     listName,
                     img,
                     encodedValue
                 }
+
+                // Always show tooltip for items (even without description)
+                action.tooltip = {
+                    content: this.#enrichItemTooltip(name, description, itemData),
+                    class: 'tah-system-tooltip',
+                    direction: this.tooltipDirection
+                }
+
+                return action
             })
 
             // Add equipped actions to the "Equipped" group

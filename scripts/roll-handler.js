@@ -135,10 +135,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             case 'initiativeCheck':
                 Hooks.call('promptInitiativeCheckCalled', actor)
                 break
-            case 'travelCheck':
-                console.warn('Not yet implemented')
-                // game.lookfar.showTravelCheckDialog()
-                break
             default:
                 console.warn(`Unknown action ID: ${actionId}`)
                 break
