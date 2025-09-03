@@ -78,15 +78,21 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @override
          * @returns {object} The TAH system styles
          */
-        // registerStyles () {
-        //     return {
-        //         template: {
-        //             class: 'tah-style-fu-style', // The class to add to first DIV element
-        //             file: 'tah-fu-style', // The file without the css extension
-        //             moduleId: MODULE.ID, // The module ID
-        //             name: 'PFU Style' // The name to display in the Token Action HUD Core 'Style' module setting
-        //         }
-        //     }
-        // }
+        registerStyles () {
+            return {
+                // fuDefault: {
+                //     class: 'tah-style-fu-style', // The class to add to first DIV element
+                //     file: 'tah-fu-style', // The file without the css extension
+                //     moduleId: MODULE.ID, // The module ID
+                //     name: 'PFU Style' // The name to display in the Token Action HUD Core 'Style' module setting
+                // },
+                fuPixel: {
+                    class: 'tah-style-pixel-style', // The class to add to first DIV element
+                    file: 'tah-fu-pixel', // The file without the css extension
+                    moduleId: MODULE.ID, // The module ID
+                    name: 'Pixel Style' // The name to display in the Token Action HUD Core 'Style' module setting
+                }
+            }
+        }
     }
 })
