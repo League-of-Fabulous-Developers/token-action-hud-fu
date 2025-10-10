@@ -18,8 +18,7 @@
   "esmodules": [
     "./scripts/init.mjs"
   ],
-  "scripts": [
-  ],
+  "scripts": [],
   "styles": [
     "./styles/tah-fu-style.css",
     "./styles/tah-fu-pixel.css"
@@ -29,6 +28,11 @@
       "lang": "en",
       "name": "English",
       "path": "languages/en.json"
+    },
+    {
+      "lang": "it",
+      "name": "Italiano",
+      "path": "languages/it.json"
     }
   ],
   "packs": [],
