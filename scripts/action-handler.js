@@ -176,6 +176,14 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             const itemType = itemData.type.charAt(0).toUpperCase() + itemData.type.slice(1)
             const stats = this.#getItemStats(itemData)
 
+            const hints = [
+                "Left-click to use",
+                "Right-click for sheet"
+            ]
+
+            if (itemData.type === "customWeapon" && itemData.system.isTransforming)
+                hints.push("Ctrl+click to change forms")
+
             return `
                 <div class='tah-tooltip-header'>
                     <h4>${name}</h4>
@@ -184,7 +192,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 <div class='tah-tooltip-body'>
                     ${stats}
                     ${description ? `<p>${description}</p>` : ''}
-                    <div class='tah-tooltip-hint'><em>Left-click to use ◆ Right-click for sheet</em></div>
+                    <div class='tah-tooltip-hint'><em>${hints.join(" ◆ ")}</em></div>
                 </div>
             `
         }
@@ -218,8 +226,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             }
 
             // Handle weapon/basic
-            if ((type === 'weapon' || type === 'basic' || type === 'customWeapon') && system.damage) {
-                const accuracy = system.accuracy?.value
+            if ((type === 'weapon' || type === 'basic') && system.damage) {
+                const accuracy = system.accuracy?.value;
+
                 if (accuracy !== undefined) {
                     const primary = system.attributes?.primary?.value || 'MIG'
                     const secondary = system.attributes?.secondary?.value || 'MIG'
@@ -229,6 +238,22 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 const damage = system.damage.value || 0
                 const damageType = system.type?.value || 'Physical'
                 stats.push(`<strong>Damage:</strong> 【HR + ${damage}】 ${damageType}`)
+            }
+
+            // Handle custom weapons
+            if ((type === 'customWeapon') && system.damage) {
+                const activeForm = system[system.activeForm];
+                const accuracy = activeForm.accuracy;                
+
+                if (activeForm.accuracy !== undefined) {
+                    const primary = activeForm.attributes.primary || 'MIG';
+                    const secondary = activeForm.attributes.secondary || 'MIG';
+                    stats.push(`<strong>Accuracy:</strong> 【${primary.toUpperCase()} + ${secondary.toUpperCase()}】+${accuracy}`);
+                }
+
+                const damage = activeForm.damage.value || 0;
+                const damageType = activeForm.damage.type || 'Physical';
+                stats.push(`<strong>Damage:</strong> 【HR + ${damage}】 ${damageType}`);
             }
 
             return stats.length > 0 ? stats.map(stat => `<div class='tah-item-stats'>${stat}</div>`).join('') : ''
@@ -345,15 +370,23 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
                 const groupData = { id: groupId, type: 'system' } // Group data for the item type
 
+
                 // Generate actions for items in this type
                 const actions = [...typeMap].map(([itemId, itemData]) => {
                     const id = itemId
-                    const name = itemData.name
+                    let name = itemData.name
                     const description = itemData.system.description || ''
                     const actionTypeName = coreModule.api.Utils.i18n(ACTION_TYPE[actionTypeId])
                     const listName = `${actionTypeName ? `${actionTypeName}: ` : ''}${name}<br>${description}`
                     const encodedValue = [actionTypeId, id].join(this.delimiter)
                     const img = coreModule.api.Utils.getImage(itemData)
+
+                    if (itemData.type === 'customWeapon' && itemData.system.isTransforming) {
+                        const activeForm = itemData.system[itemData.system.activeForm];
+                        if (activeForm.name)
+                            name = `${itemData.name} - ${activeForm.name}`
+
+                    }
 
                     // Add tooltip if item has description
                     const action = {

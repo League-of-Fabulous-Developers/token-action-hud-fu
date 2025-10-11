@@ -63,7 +63,6 @@ export const GROUP = {
     equipped: { id: 'equipped', name: 'tokenActionHud.fu.equipped.label', type: 'system' },
     basic: { id: 'basic', name: 'TYPES.Item.basic', type: 'system' },
     weapon: { id: 'weapon', name: 'TYPES.Item.weapon', type: 'system' },
-    customWeapon: { id: 'customWeapon', name: 'TYPES.Item.weapon', type: 'system' },
     shield: { id: 'shield', name: 'TYPES.Item.shield', type: 'system' },
     armor: { id: 'armor', name: 'TYPES.Item.armor', type: 'system' },
     accessory: { id: 'accessory', name: 'TYPES.Item.accessory', type: 'system' },
@@ -113,7 +112,7 @@ export const GROUP = {
 export const ITEM_TYPE = {
     basic: { groupId: 'basic' },
     weapon: { groupId: 'weapon' },
-    customWeapon: { groupId: 'customWeapon' },
+    customWeapon: { groupId: 'weapon' },
     shield: { groupId: 'shield' },
     armor: { groupId: 'armor' },
     accessory: { groupId: 'accessory' },
