@@ -218,7 +218,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             }
 
             // Handle weapon/basic
-            if ((type === 'weapon' || type === 'basic') && system.damage) {
+            if ((type === 'weapon' || type === 'basic' || type === 'customWeapon') && system.damage) {
                 const accuracy = system.accuracy?.value
                 if (accuracy !== undefined) {
                     const primary = system.attributes?.primary?.value || 'MIG'
