@@ -14,7 +14,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          */
         async handleActionClick (event, encodedValue) {
             const [actionTypeId, actionId] = encodedValue.split('|')
-            const isShift = this.isShift
+            const isShift = this.isShift;
 
             const renderable = ['item']
 
@@ -163,7 +163,13 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 shift: event.shiftKey,
                 ctrl: event.ctrlKey
             }
-            item.roll(modifiers)
+            
+            if (item.type === "customWeapon" && item.system.isTransforming && modifiers.ctrl) {
+                console.log("Changing form");
+                item.system.switchForm();
+            } else {
+                item.roll(modifiers)
+            }
         }
 
         /**

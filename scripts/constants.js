@@ -112,6 +112,7 @@ export const GROUP = {
 export const ITEM_TYPE = {
     basic: { groupId: 'basic' },
     weapon: { groupId: 'weapon' },
+    customWeapon: { groupId: 'weapon' },
     shield: { groupId: 'shield' },
     armor: { groupId: 'armor' },
     accessory: { groupId: 'accessory' },

@@ -23,7 +23,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 name: coreModule.api.Utils.i18n('Attack'),
                 groups: [
                     { ...groups.basic, nestId: 'attack_basic' },
-                    { ...groups.weapon, nestId: 'attack_weapon' }
+                    { ...groups.weapon, nestId: 'attack_weapon' },
+                    { ...groups.customWeapon, nestId: 'attack_customWeapon' }
                 ]
             },
             {
