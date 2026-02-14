@@ -45,6 +45,16 @@
 #token-action-hud.tah-style-pixel-style button.tah-group-button {
     text-transform: uppercase;
 }
+
+/* Grey out inactiveEffect group */
+#token-action-hud.tah-style-pixel-style .tah-subgroup[data-nest-id="effect_inactive"] {
+    opacity: 0.6;
+}
+
+#token-action-hud.tah-style-pixel-style .tah-subgroup[data-nest-id="effect_inactive"] .tah-action-button .tah-button-text {
+    color: #888888 !important;
+}
+
 /*Border and Background Settings*/
 #token-action-hud.tah-style-pixel-style .tah-groups, 
 #token-action-hud.tah-style-pixel-style .tah-subgroups-container,  

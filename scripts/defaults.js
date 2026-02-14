@@ -72,28 +72,28 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                     // { ...groups.check, nestId: 'action_check' }
                 ]
             },
-            // {
-            //     nestId: 'effect',
-            //     id: 'effect',
-            //     name: coreModule.api.Utils.i18n('Effect'),
-            //     groups: [
-            //         { ...groups.temporaryEffect, nestId: 'effect_temporary' },
-            //         { ...groups.passiveEffect, nestId: 'effect_passive' },
-            //         { ...groups.inactiveEffect, nestId: 'effect_inactive' }
-            //     ]
-            // },
-            // {
-            //     nestId: 'utility',
-            //     id: 'utility',
-            //     name: coreModule.api.Utils.i18n('tokenActionHud.utility'),
-            //     groups: [
-            //         { ...groups.combat, nestId: 'utility_combat' },
-            //         { ...groups.token, nestId: 'utility_token' },
-            //         { ...groups.rests, nestId: 'utility_rests' },
-            //         { ...groups.utility, nestId: 'utility_utility' },
-            //         { ...groups.downtime, nestId: 'utility_downtime' }
-            //     ]
-            // }
+            {
+                nestId: 'effect',
+                id: 'effect',
+                name: coreModule.api.Utils.i18n('Effect'),
+                groups: [
+                    { ...groups.temporaryEffect, nestId: 'effect_temporary' },
+                    { ...groups.passiveEffect, nestId: 'effect_passive' },
+                    { ...groups.inactiveEffect, nestId: 'effect_inactive' }
+                ]
+            },
+            {
+                nestId: 'utility',
+                id: 'utility',
+                name: coreModule.api.Utils.i18n('tokenActionHud.utility'),
+                groups: [
+                    { ...groups.combat, nestId: 'utility_combat' },
+                    { ...groups.token, nestId: 'utility_token' },
+                    { ...groups.rests, nestId: 'utility_rests' },
+                    { ...groups.utility, nestId: 'utility_utility' },
+                    { ...groups.downtime, nestId: 'utility_downtime' }
+                ]
+            }
         ],
         groups: groupsArray
     }

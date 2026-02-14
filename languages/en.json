@@ -14,6 +14,10 @@
           "hint": "Choose whether to display unequipped items on the HUD",
           "name": "Display Unequipped"
         }
+      },
+      "dialog": {
+        "confirmDeletionTitle": "Confirm Deletion",
+        "confirmDeletionContent": "Are you sure you want to delete this temporary effect?"
       }
     }
   }

@@ -163,10 +163,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 shift: event.shiftKey,
                 ctrl: event.ctrlKey
             }
-            
-            if (item.type === "customWeapon" && item.system.isTransforming && modifiers.ctrl) {
-                console.log("Changing form");
-                item.system.switchForm();
+            if (item.type === 'customWeapon' && item.system.isTransforming && modifiers.ctrl) {
+                console.log('Changing form')
+                item.system.switchForm()
             } else {
                 item.roll(modifiers)
             }
@@ -177,7 +176,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {Object} actor
          * @param {String} effectId
          */
-        #handleEffectAction (event, actor, effectId) {
+        async #handleEffectAction (event, actor, effectId) {
             const isRightClick = event.type === 'contextmenu'
             const effect = Array.from(actor.allEffects()).find((value) => value.id === effectId)
             console.debug(`Handling click event for effect ${effectId} = ${effect.name}; RightClick: ${isRightClick}`)
@@ -187,15 +186,22 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 const isTemporary = effect.isTemporary && effect.parent.type !== 'skill'
                 // Remove
                 if (isTemporary) {
-                    effect.delete()
-                    this.#onUpdate()
+                    const confirmDelete = await foundry.applications.api.DialogV2.confirm({
+                        window: { title: game.i18n.localize('tokenActionHud.fu.dialog.confirmDeletionTitle') },
+                        content: `<p>${game.i18n.localize('tokenActionHud.fu.dialog.confirmDeletionContent')}</p>`
+                    })
+
+                    if (confirmDelete) {
+                        await effect.delete()
+                        this.#onUpdate()
+                    }
                 } else {
                     // Toggle the effect
-                    effect.update({ disabled: !effect.disabled })
+                    await effect.update({ disabled: !effect.disabled })
                     this.#onUpdate()
                 }
             } else {
-                // this.renderItem(actor, effectId)
+                effect?.sheet?.render(true)
             }
         }
 
