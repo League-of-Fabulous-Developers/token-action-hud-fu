@@ -1,0 +1,49 @@
+{
+  "tokenActionHud": {
+    "fu": {
+      "group": "Group",
+      "equipped": {
+        "label": "[Equipped]"
+      },
+      "check": {
+        "label": "Checks",
+        "travelcheck": "Travel Check"
+      },
+      "settings": {
+        "displayUnequipped": {
+          "hint": "Choose whether to display unequipped items on the HUD",
+          "name": "Display Unequipped"
+        }
+      },
+      "dialog": {
+        "confirmDeletionTitle": "Confirm Deletion",
+        "confirmDeletionContent": "Are you sure you want to delete this temporary effect?"
+      }
+    }
+  },
+  "Attribute Check": "Attribute Check",
+  "Open Check": "Open Check",
+  "Group Check": "Group Check",
+  "Initiative Check": "Initiative Check",
+  "Guard": "Guard",
+  "Equipment": "Equipment",
+  "Hinder": "Hinder",
+  "Inventory": "Inventory",
+  "Objective": "Objective",
+  "Spell": "Spell",
+  "Study": "Study",
+  "Skill": "Skill",
+  "Rest": "Rest",
+  "Accuracy": "Accuracy",
+  "Damage": "Damage",
+  "Equipped": "Equipped",
+  "Checks": "Checks",
+  "Combat": "Combat",
+  "Items": "Items",
+  "Downtime": "Downtime",
+  "Effects": "Effects",
+  "Actions": "Actions",
+  "Action": "Action",
+  "Attack": "Attack",
+  "Attacks": "Attacks"
+}
